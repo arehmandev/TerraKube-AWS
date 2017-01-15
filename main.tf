@@ -51,3 +51,7 @@ module "kubemaster" {
 module "kubenode" {
   source = "./modules/kubernetes/kubenode"
 }
+
+module "kubeadmin" {
+  source = "./modules/kubernetes/kubeadmin"
+}
