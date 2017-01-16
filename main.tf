@@ -33,7 +33,7 @@ module "security" {
 }
 
 module "route53" {
-  source       = "github.com/arehmandev/Prototype-X/modules/route53"
+  source       = "./modules/route53"
   depends-on   = "${module.vpc.dependency}"
   internal-tld = "${var.internal-tld}"
   vpcid        = "${module.vpc.aws_vpc.id}"
@@ -63,3 +63,4 @@ module "kubenode" {
 
 
 #}
+
