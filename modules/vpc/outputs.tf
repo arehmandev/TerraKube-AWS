@@ -21,3 +21,7 @@ output "aws_subnet.private1.id" {
 output "aws_subnet.private2.id" {
   value = "${aws_subnet.private2.id}"
 }
+
+output "dependency" {
+  value = "${null_resource.dummy_dependency.id}"
+}

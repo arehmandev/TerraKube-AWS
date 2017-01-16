@@ -26,14 +26,18 @@ module "vpc" {
 }
 
 module "security" {
-  depends-on = "module.vpc.dependency"
   source     = "./modules/security"
-  vpcid      = "module.VPC.aws_vpc.id"
+  depends-on = "${module.vpc.dependency}"
+  vpcid      = "${module.vpc.aws_vpc.id}"
   iplock     = "${var.iplock}"
 }
 
 module "route53" {
-  source = "./modules/route53"
+  source       = "github.com/arehmandev/Prototype-X/modules/route53"
+  depends-on   = "${module.vpc.dependency}"
+  internal-tld = "${var.internal-tld}"
+  vpcid        = "${module.vpc.aws_vpc.id}"
+  cluster-name = "${var.cluster-name}"
 }
 
 module "iam" {
@@ -52,6 +56,10 @@ module "kubenode" {
   source = "./modules/kubernetes/kubenode"
 }
 
-module "kubeadmin" {
-  source = "./modules/kubernetes/kubeadmin"
-}
+#module "kubeadmin" {
+
+
+#  source = "./modules/kubernetes/kubeadmin"
+
+
+#}

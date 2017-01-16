@@ -19,7 +19,6 @@ EOF
 }
 
 resource "null_resource" "kubeconfig" {
-
   provisioner "local-exec" {
     command = <<LOCAL_EXEC
 mkdir -p ./tmp && cat <<'__USERDATA__' > ./tmp/kubeconfig
@@ -43,5 +42,4 @@ kubectl config set-context ${ var.name } \
 kubectl config use-context ${ var.name }
 LOCAL_EXEC
   }
-
 }

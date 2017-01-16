@@ -4,10 +4,9 @@ adminprofile = "default"
 key_name = "terraform"
 public_key_path = "~/.ssh/id_rsa.pub"
 
-##### Module base
+##### Module vpc
 
 #VPC Networking
-iplock = "0.0.0.0/0"
 vpc_cidr = "10.0.0.0/16"
 
 # 2 Private CIDRs
@@ -38,3 +37,10 @@ subnetaz2 = {
   eu-west-2 = "eu-west-2b"
   eu-central-1 = "eu-central-1b"
 }
+
+### Module security
+iplock = "0.0.0.0/0"
+
+### Module route53
+internal-tld = "terrakube.com"
+cluster-name = "terrakube"

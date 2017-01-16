@@ -14,6 +14,6 @@ output "aws_security_group.bastion" {
   value = "${aws_security_group.bastion.id}"
 }
 
-output "dependency.sg" {
+output "dependency" {
   value = "${null_resource.dummy_dependency.id}"
 }

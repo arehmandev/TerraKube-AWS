@@ -34,6 +34,12 @@ variable "subnetaz2" {
   type = "map"
 }
 
-### SG module
+### security module
 
 variable "iplock" {}
+
+### route53 module
+
+variable "internal-tld" {}
+
+variable "cluster-name" {}
