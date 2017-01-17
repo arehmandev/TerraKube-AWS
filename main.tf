@@ -8,7 +8,10 @@ module "s3" {
 }
 
 module "tls" {
-  source = "./modules/tls"
+  source        = "./modules/tls"
+  internal-tld  = "${var.internal-tld}"
+  k8s-serviceip = "10.3.0.1"
+  adminregion   = "${var.adminregion}"
 }
 
 module "vpc" {
