@@ -7,5 +7,5 @@ output "kube_bucket_id" {
 }
 
 output "dependency" {
-  value = "${null_resource.dummy_dependency.id}"
+  value = "${null_resource.roledependency.id}"
 }

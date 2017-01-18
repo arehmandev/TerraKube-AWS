@@ -3,6 +3,7 @@ provider "aws" {
   profile = "${var.adminprofile}"
 }
 
+#1
 module "tls" {
   source        = "./modules/tls"
   internal-tld  = "${var.internal-tld}"
@@ -20,6 +21,7 @@ module "tls" {
   adminkey      = "${var.adminkey}"
 }
 
+#2
 module "vpc" {
   source          = "./modules/vpc"
   adminregion     = "${var.adminregion}"
@@ -34,6 +36,7 @@ module "vpc" {
   subnetaz2       = "${var.subnetaz2}"
 }
 
+#
 module "security" {
   source     = "./modules/security"
   depends-on = "${module.vpc.dependency}"
@@ -41,6 +44,7 @@ module "security" {
   iplock     = "${var.iplock}"
 }
 
+#3
 module "route53" {
   source       = "./modules/route53"
   depends-on   = "${module.vpc.dependency}"
@@ -51,7 +55,7 @@ module "route53" {
 
 module "iam" {
   source           = "./modules/iam"
-  depends-on       = "${module.tls.dependency}"
+  depends-on       = "${module.route53.dependency}"
   kubebucket       = "${var.bucketname}"
   hostedzone       = "${module.route53.internal-zone-id}"
   master_role_name = "${var.master_role_name}"
@@ -60,7 +64,7 @@ module "iam" {
 
 module "s3" {
   source      = "./modules/s3"
-  depends-on  = "${module.iam.dependency}"
+  depends-on  = "${module.iam.worker_profile_name}"
   bucketname  = "${var.bucketname}"
   worker-role = "${var.worker_role_name}"
   capem       = "${var.capem}"
