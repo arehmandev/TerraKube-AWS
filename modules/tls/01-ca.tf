@@ -27,7 +27,7 @@ resource "null_resource" "cakey" {
   depends_on = ["tls_private_key.ca"]
 
   provisioner "local-exec" {
-    command = "echo '${tls_private_key.ca.private_key_pem}' > ${path.cwd}/Files/${var.cakey} && chmod 600 ${path.cwd}/Files/${var.cakey}"
+    command = "echo '${tls_private_key.ca.private_key_pem}' > ${path.cwd}/Certs/${var.cakey} && chmod 600 ${path.cwd}/Certs/${var.cakey}"
   }
 }
 
@@ -35,6 +35,6 @@ resource "null_resource" "capem" {
   depends_on = ["tls_self_signed_cert.ca"]
 
   provisioner "local-exec" {
-    command = "echo '${tls_self_signed_cert.ca.cert_pem}' > ${path.cwd}/Files/${var.capem} && chmod 600 ${path.cwd}/Files/${var.capem}"
+    command = "echo '${tls_self_signed_cert.ca.cert_pem}' > ${path.cwd}/Certs/${var.capem} && chmod 600 ${path.cwd}/Certs/${var.capem}"
   }
 }

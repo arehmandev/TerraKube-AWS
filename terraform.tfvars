@@ -62,4 +62,8 @@ kubenodekey = "kubenodekey.pem"
 adminpem = "admin.pem"
 adminkey = "adminkey.pem"
 
-bucketname = "terrakubebucketabs"
+bucketname = "kubernetes-certs"
+
+## IAM module
+master_role_name = "master_role"
+worker_role_name = "worker_role"

@@ -1,8 +1,14 @@
-resource "null_resource" "kubearn" {
-  depends_on = ["aws_s3_bucket.kubebucket"]
+data "template_file" "kubearn" {
+  template = "${file("${path.module}/Files/workerarn.sh")}"
 
+  vars {
+    worker-role = "${var.worker-role}"
+  }
+}
+
+resource "null_resource" "kubearn" {
   provisioner "local-exec" {
-    command = "bash ${path.module}/Files/workerarn.sh > ${path.module}/Files/worker_role_arn.txt"
+    command = "echo $(${data.template_file.kubearn.rendered}) > ${path.module}/Files/worker_role_arn.txt"
   }
 }
 

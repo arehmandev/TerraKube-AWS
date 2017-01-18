@@ -2,6 +2,8 @@
 
 variable "bucketname" {}
 
+variable "worker-role" {}
+
 ### Bucket objects
 
 variable "capem" {}

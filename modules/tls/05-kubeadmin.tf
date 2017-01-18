@@ -39,7 +39,7 @@ resource "null_resource" "kubeadminkey" {
   depends_on = ["tls_private_key.kubeadmin"]
 
   provisioner "local-exec" {
-    command = "echo '${tls_private_key.kubeadmin.private_key_pem}' > ${path.cwd}/Files/${var.adminkey} && chmod 600 ${path.cwd}/Files/${var.adminkey}"
+    command = "echo '${tls_private_key.kubeadmin.private_key_pem}' > ${path.cwd}/Certs/${var.adminkey} && chmod 600 ${path.cwd}/Certs/${var.adminkey}"
   }
 }
 
@@ -47,6 +47,6 @@ resource "null_resource" "kubeadminpem" {
   depends_on = ["tls_locally_signed_cert.kubeadmin"]
 
   provisioner "local-exec" {
-    command = "echo '${tls_locally_signed_cert.kubeadmin.cert_pem}' > ${path.cwd}/Files/${var.adminpem} && chmod 600 ${path.cwd}/Files/${var.adminpem}"
+    command = "echo '${tls_locally_signed_cert.kubeadmin.cert_pem}' > ${path.cwd}/Certs/${var.adminpem} && chmod 600 ${path.cwd}/Certs/${var.adminpem}"
   }
 }

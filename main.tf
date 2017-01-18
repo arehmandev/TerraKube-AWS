@@ -20,22 +20,6 @@ module "tls" {
   adminkey      = "${var.adminkey}"
 }
 
-module "s3" {
-  source      = "./modules/s3"
-  depends-on  = "${module.tls.dependency}"
-  bucketname  = "${var.bucketname}"
-  capem       = "${var.capem}"
-  cakey       = "${var.cakey}"
-  etcdpem     = "${var.etcdpem}"
-  etcdkey     = "${var.etcdkey}"
-  masterpem   = "${var.masterpem}"
-  masterkey   = "${var.masterkey}"
-  kubenodepem = "${var.kubenodepem}"
-  kubenodekey = "${var.kubenodekey}"
-  adminpem    = "${var.adminpem}"
-  adminkey    = "${var.adminkey}"
-}
-
 module "vpc" {
   source          = "./modules/vpc"
   adminregion     = "${var.adminregion}"
@@ -66,7 +50,29 @@ module "route53" {
 }
 
 module "iam" {
-  source = "./modules/iam"
+  source           = "./modules/iam"
+  depends-on       = "${module.tls.dependency}"
+  kubebucket       = "${var.bucketname}"
+  hostedzone       = "${module.route53.internal-zone-id}"
+  master_role_name = "${var.master_role_name}"
+  worker_role_name = "${var.worker_role_name}"
+}
+
+module "s3" {
+  source      = "./modules/s3"
+  depends-on  = "${module.iam.dependency}"
+  bucketname  = "${var.bucketname}"
+  worker-role = "${var.worker_role_name}"
+  capem       = "${var.capem}"
+  cakey       = "${var.cakey}"
+  etcdpem     = "${var.etcdpem}"
+  etcdkey     = "${var.etcdkey}"
+  masterpem   = "${var.masterpem}"
+  masterkey   = "${var.masterkey}"
+  kubenodepem = "${var.kubenodepem}"
+  kubenodekey = "${var.kubenodekey}"
+  adminpem    = "${var.adminpem}"
+  adminkey    = "${var.adminkey}"
 }
 
 module "etcd" {

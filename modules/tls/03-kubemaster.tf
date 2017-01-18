@@ -41,7 +41,7 @@ resource "null_resource" "masterkey" {
   depends_on = ["tls_private_key.kubemaster"]
 
   provisioner "local-exec" {
-    command = "echo '${tls_private_key.kubemaster.private_key_pem}' > ${path.cwd}/Files/${var.masterkey} && chmod 600 ${path.cwd}/Files/${var.masterkey}"
+    command = "echo '${tls_private_key.kubemaster.private_key_pem}' > ${path.cwd}/Certs/${var.masterkey} && chmod 600 ${path.cwd}/Certs/${var.masterkey}"
   }
 }
 
@@ -49,6 +49,6 @@ resource "null_resource" "masterpem" {
   depends_on = ["tls_locally_signed_cert.kubemaster"]
 
   provisioner "local-exec" {
-    command = "echo '${tls_locally_signed_cert.kubemaster.cert_pem}' > ${path.cwd}/Files/${var.masterpem} && chmod 600 ${path.cwd}/Files/${var.masterpem}"
+    command = "echo '${tls_locally_signed_cert.kubemaster.cert_pem}' > ${path.cwd}/Certs/${var.masterpem} && chmod 600 ${path.cwd}/Certs/${var.masterpem}"
   }
 }

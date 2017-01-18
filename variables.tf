@@ -67,3 +67,9 @@ variable "adminpem" {}
 variable "adminkey" {}
 
 variable "bucketname" {}
+
+## IAM module
+
+variable "master_role_name" {}
+
+variable "worker_role_name" {}
