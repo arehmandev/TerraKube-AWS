@@ -43,3 +43,27 @@ variable "iplock" {}
 variable "internal-tld" {}
 
 variable "cluster-name" {}
+
+# names of the pem files generated defined when the module is called and the IP settings for CA
+
+variable "capem" {}
+
+variable "cakey" {}
+
+variable "etcdpem" {}
+
+variable "etcdkey" {}
+
+variable "masterpem" {}
+
+variable "masterkey" {}
+
+variable "kubenodepem" {}
+
+variable "kubenodekey" {}
+
+variable "adminpem" {}
+
+variable "adminkey" {}
+
+variable "bucketname" {}

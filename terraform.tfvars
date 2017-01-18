@@ -44,3 +44,22 @@ iplock = "0.0.0.0/0"
 ### Module route53
 internal-tld = "terrakube.com"
 cluster-name = "terrakube"
+
+
+### Module tls and s3
+capem = "ca.pem"
+cakey = "cakey.pem"
+
+etcdpem = "etcd.pem"
+etcdkey = "etcdkey.pem"
+
+masterpem = "master.pem"
+masterkey = "masterkey.pem"
+
+kubenodepem = "kubenode.pem"
+kubenodekey = "kubenodekey.pem"
+
+adminpem = "admin.pem"
+adminkey = "adminkey.pem"
+
+bucketname = "terrakubebucketabs"

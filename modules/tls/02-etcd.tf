@@ -42,7 +42,7 @@ resource "null_resource" "etcdkey" {
   depends_on = ["tls_private_key.etcd"]
 
   provisioner "local-exec" {
-    command = "echo '${tls_private_key.etcd.private_key_pem}' > ${path.module}/Files/${var.etcdkey} && chmod 600 ${path.module}/Files/${var.etcdkey}"
+    command = "echo '${tls_private_key.etcd.private_key_pem}' > ${path.cwd}/Files/${var.etcdkey} && chmod 600 ${path.cwd}/Files/${var.etcdkey}"
   }
 }
 
@@ -50,6 +50,6 @@ resource "null_resource" "etcdpem" {
   depends_on = ["tls_locally_signed_cert.etcd"]
 
   provisioner "local-exec" {
-    command = "echo '${tls_locally_signed_cert.etcd.cert_pem}' > ${path.module}/Files/${var.etcdpem} && chmod 600 ${path.module}/Files/${var.etcdpem}"
+    command = "echo '${tls_locally_signed_cert.etcd.cert_pem}' > ${path.cwd}/Files/${var.etcdpem} && chmod 600 ${path.cwd}/Files/${var.etcdpem}"
   }
 }

@@ -3,15 +3,37 @@ provider "aws" {
   profile = "${var.adminprofile}"
 }
 
-module "s3" {
-  source = "./modules/s3"
-}
-
 module "tls" {
   source        = "./modules/tls"
   internal-tld  = "${var.internal-tld}"
   k8s-serviceip = "10.3.0.1"
   adminregion   = "${var.adminregion}"
+  capem         = "${var.capem}"
+  cakey         = "${var.cakey}"
+  etcdpem       = "${var.etcdpem}"
+  etcdkey       = "${var.etcdkey}"
+  masterpem     = "${var.masterpem}"
+  masterkey     = "${var.masterkey}"
+  kubenodepem   = "${var.kubenodepem}"
+  kubenodekey   = "${var.kubenodekey}"
+  adminpem      = "${var.adminpem}"
+  adminkey      = "${var.adminkey}"
+}
+
+module "s3" {
+  source      = "./modules/s3"
+  depends-on  = "${module.tls.dependency}"
+  bucketname  = "${var.bucketname}"
+  capem       = "${var.capem}"
+  cakey       = "${var.cakey}"
+  etcdpem     = "${var.etcdpem}"
+  etcdkey     = "${var.etcdkey}"
+  masterpem   = "${var.masterpem}"
+  masterkey   = "${var.masterkey}"
+  kubenodepem = "${var.kubenodepem}"
+  kubenodekey = "${var.kubenodekey}"
+  adminpem    = "${var.adminpem}"
+  adminkey    = "${var.adminkey}"
 }
 
 module "vpc" {

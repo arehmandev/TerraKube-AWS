@@ -26,35 +26,22 @@ variable "adminregion" {}
 variable "k8s-serviceip" {}
 
 # names of the pem files generated defined when the module is called and the IP settings for CA
+variable "capem" {}
 
-variable "capem" {
-  default = "ca.pem"
-}
+variable "cakey" {}
 
-variable "cakey" {
-  default = "cakey.pem"
-}
+variable "etcdpem" {}
 
-variable "etcdpem" {
-  default = "etcd.pem"
-}
+variable "etcdkey" {}
 
-variable "etcdkey" {
-  default = "etcdkey.pem"
-}
+variable "masterpem" {}
 
-variable "masterpem" {
-  default = "master.pem"
-}
+variable "masterkey" {}
 
-variable "masterkey" {
-  default = "masterkey.pem"
-}
+variable "kubenodepem" {}
 
-variable "kubenodepem" {
-  default = "master.pem"
-}
+variable "kubenodekey" {}
 
-variable "kubenodekey" {
-  default = "masterkey.pem"
-}
+variable "adminpem" {}
+
+variable "adminkey" {}

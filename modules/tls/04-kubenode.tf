@@ -39,7 +39,7 @@ resource "null_resource" "kubenodekey" {
   depends_on = ["tls_private_key.kubenode"]
 
   provisioner "local-exec" {
-    command = "echo '${tls_private_key.kubenode.private_key_pem}' > ${path.module}/Files/${var.kubenodekey} && chmod 600 ${path.module}/Files/${var.kubenodekey}"
+    command = "echo '${tls_private_key.kubenode.private_key_pem}' > ${path.cwd}/Files/${var.kubenodekey} && chmod 600 ${path.cwd}/Files/${var.kubenodekey}"
   }
 }
 
@@ -47,6 +47,6 @@ resource "null_resource" "kubenodepem" {
   depends_on = ["tls_locally_signed_cert.kubenode"]
 
   provisioner "local-exec" {
-    command = "echo '${tls_locally_signed_cert.kubenode.cert_pem}' > ${path.module}/Files/${var.kubenodepem} && chmod 600 ${path.module}/Files/${var.kubenodepem}"
+    command = "echo '${tls_locally_signed_cert.kubenode.cert_pem}' > ${path.cwd}/Files/${var.kubenodepem} && chmod 600 ${path.cwd}/Files/${var.kubenodepem}"
   }
 }
