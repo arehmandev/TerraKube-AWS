@@ -1,3 +1,4 @@
+!Certs/.gitkeep 
 Certs/*
 .terraform
 terraform.tfstate
