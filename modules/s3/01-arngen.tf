@@ -18,7 +18,7 @@ resource "null_resource" "arn" {
   depends_on = ["null_resource.roledependency"]
 
   provisioner "local-exec" {
-    command = "bash ${path.module}/Files/rootarn.sh > ${path.module}/Files/root_arn.txt"
+    command = "echo arn:aws:iam::$(bash ${path.module}/Files/rootarn.sh):roo > ${path.module}/Files/root_arn.txt"
   }
 }
 
