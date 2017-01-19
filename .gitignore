@@ -1,5 +1,5 @@
-!Certs/.gitkeep 
 Certs/*
+!Certs/.gitkeep 
 .terraform
 terraform.tfstate
 terraform.tfstate.backup
