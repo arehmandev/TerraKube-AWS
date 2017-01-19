@@ -79,19 +79,17 @@ module "s3" {
   adminkey    = "${var.adminkey}"
 }
 
-/*
-
 module "etcd" {
   source     = "./modules/kubernetes/etcd"
   depends-on = "${module.s3.dependency}"
 
   #Template variables
   internal-tld = "${var.internal-tld}"
-  adminregion              = "${var.adminregion}"
-  bucketname               = "${var.bucketname}"
-  capem             = "${var.capem}"
-  etcdpem           = "${var.etcdpem}"
-  etcdkey            = "${var.etcdkey}"
+  adminregion  = "${var.adminregion}"
+  bucketname   = "${var.bucketname}"
+  capem        = "${var.capem}"
+  etcdpem      = "${var.etcdpem}"
+  etcdkey      = "${var.etcdkey}"
 
   lc_name              = "${var.lc_name}"
   ownerid              = "${var.ownerid}"
@@ -123,9 +121,6 @@ module "kubemaster" {
 module "kubenode" {
   source = "./modules/kubernetes/kubenode"
 }
-
-*/
-
 
 #module "kubeadmin" {
 
