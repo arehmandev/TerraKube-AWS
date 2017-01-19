@@ -73,3 +73,49 @@ variable "bucketname" {}
 variable "master_role_name" {}
 
 variable "worker_role_name" {}
+
+###### Etcd module
+
+## Launch config
+variable "lc_name" {}
+
+variable "coresize" {}
+
+variable "ownerid" {}
+
+variable "ami_name" {}
+
+variable "channel" {}
+
+variable "virtualization_type" {}
+
+## Autoscaling groups
+
+variable "asg_name" {}
+
+variable "asg_number_of_instances" {}
+
+variable "asg_minimum_number_of_instances" {}
+
+## Template variables
+variable "cluster-domain" {}
+
+variable "dns-service-ip" {}
+
+variable "hyperkube-image" {}
+
+variable "hyperkube-tag" {}
+
+variable "pod-ip-range" {}
+
+variable "service-cluster-ip-range" {}
+
+## Bucket related
+
+variable "cacertobject" {}
+
+variable "cakeyobject" {}
+
+variable "etcdcertobject" {}
+
+variable "etcdkeyobject" {}

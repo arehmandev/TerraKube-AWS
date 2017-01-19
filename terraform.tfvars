@@ -67,3 +67,35 @@ bucketname = "kubernetes-certs"
 ## IAM module
 master_role_name = "master_role"
 worker_role_name = "worker_role"
+
+
+###### Etcd module
+
+# Launch config
+lc_name = "Etcd-lc"
+coresize = "t2.micro"
+ownerid = "595879546273"
+ami_name = "CoreOS"
+channel = "stable"
+virtualization_type ="hvm"
+
+# Autoscaling groups
+asg_name = "Etcd-asg"
+asg_number_of_instances = "3"
+asg_minimum_number_of_instances = "3"
+
+## Template variables
+
+cluster-domain           = "cluster.local"
+dns-service-ip           = "10.3.0.10"
+hyperkube-image          = "quay.io/coreos/hyperkube"
+hyperkube-tag            = "v1.5.1_coreos.0"
+pod-ip-range             = "10.2.0.0/16"
+service-cluster-ip-range = "10.3.0.0/24"
+
+## Bucket related
+cacertobject = "ca.pem"
+cakeyobject = "ca-key.pem"
+
+etcdcertobject = "etcd.pem"
+etcdkeyobject = "etcd-key.pem"

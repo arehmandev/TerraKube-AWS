@@ -2,12 +2,22 @@ data "template_file" "kubeetcd" {
   template = "${file("${path.module}/${var.userdata}")}"
 
   vars {
-    region         = "${var.adminregion}"
-    certauthbucket = "${var.certauthbucket}"
-    cacertobject   = "${var.cacertobject}"
-    etcdbucket     = "${var.etcdbucket}"
-    etcdcertobject = "${var.etcdcertobject}"
-    etcdkeyobject  = "${var.etcdkeyobject}"
+    cluster-domain           = "${ var.cluster-domain }"
+    cluster-token            = "etcd-cluster-${ var.cluster-name }"
+    dns-service-ip           = "${ var.dns-service-ip }"
+    fqdn                     = "etcd${ count.index + 1 }.${ var.internal-tld }"
+    hostname                 = "etcd${ count.index + 1 }"
+    hyperkube                = "${ var.hyperkube-image }:${ var.hyperkube-tag }"
+    hyperkube-image          = "${ var.hyperkube-image }"
+    hyperkube-tag            = "${ var.hyperkube-tag }"
+    internal-tld             = "${ var.internal-tld }"
+    pod-ip-range             = "${ var.pod-ip-range }"
+    region                   = "${ var.adminregion }"
+    service-cluster-ip-range = "${ var.service-cluster-ip-range }"
+    bucket                   = "${ var.bucketname }"
+    cacertobject             = "${var.cacertobject}"
+    etcdcertobject           = "${var.etcdcertobject}"
+    etcdkeyobject            = "${var.etcdkeyobject}"
   }
 }
 

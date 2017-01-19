@@ -1,17 +1,35 @@
 ### Module etcd
 
+variable "depends-on" {}
+
 # template variables
+variable "cluster-domain" {}
+
+variable "cluster-name" {}
+
+variable "dns-service-ip" {}
+
+variable "internal-tld" {}
+
+variable "hyperkube-image" {}
+
+variable "hyperkube-tag" {}
+
+variable "pod-ip-range" {}
+
+variable "service-cluster-ip-range" {}
+
 variable "adminregion" {}
 
-variable "certauthbucket" {}
+variable "bucketname" {}
 
 variable "cacertobject" {}
-
-variable "etcdbucket" {}
 
 variable "etcdcertobject" {}
 
 variable "etcdkeyobject" {}
+
+### ASG variables
 
 variable "lc_name" {}
 

@@ -80,7 +80,45 @@ module "s3" {
 }
 
 module "etcd" {
-  source = "./modules/kubernetes/etcd"
+  source     = "./modules/kubernetes/etcd"
+  depends-on = "${module.s3.dependency}"
+
+  #Template variables
+  cluster-domain           = "${var.cluster-domain}"
+  cluster-name             = "${var.cluster-name}"
+  dns-service-ip           = "${var.dns-service-ip}"
+  internal-tld             = "${var.internal-tld}"
+  hyperkube-image          = "${var.hyperkube-image}"
+  hyperkube-tag            = "${var.hyperkube-tag}"
+  pod-ip-range             = "${var.pod-ip-range}"
+  service-cluster-ip-range = "${var.service-cluster-ip-range}"
+  adminregion              = "${var.adminregion}"
+  bucketname               = "${var.bucketname}"
+  cacertobject             = "${var.cacertobject}"
+  etcdcertobject           = "${var.etcdcertobject}"
+  etcdkeyobject            = "${var.etcdkeyobject}"
+
+  lc_name              = "${var.lc_name}"
+  ownerid              = "${var.ownerid}"
+  ami_name             = "${var.ami_name}"
+  channel              = "${var.channel}"
+  virtualization_type  = "${var.virtualization_type}"
+  instance_type        = "${var.coresize}"
+  iam_instance_profile = "${module.iam.worker_profile_name}"
+  key_name             = "${var.key_name}"
+  security_group       = "${module.security.aws_security_group.etcd}"
+  userdata             = "Files/kubeetcd.yml"
+
+  asg_name                        = "${var.asg_name}"
+  asg_number_of_instances         = "${var.asg_number_of_instances}"
+  asg_minimum_number_of_instances = "${var.asg_minimum_number_of_instances}"
+
+  azs        = ["${lookup(var.subnetaz1, var.adminregion)}", "${lookup(var.subnetaz2, var.adminregion)}"]
+  subnet_azs = ["${module.vpc.aws_subnet.private1.id}", "${module.vpc.aws_subnet.private2.id}"]
+
+  # To have the etcd instances in public subnets:
+
+  #subnet_azs = ["${module.vpc.aws_subnet.public1.id}", "${module.vpc.aws_subnet.public2.id}"]
 }
 
 module "kubemaster" {
