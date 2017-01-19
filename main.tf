@@ -79,24 +79,19 @@ module "s3" {
   adminkey    = "${var.adminkey}"
 }
 
+/*
+
 module "etcd" {
   source     = "./modules/kubernetes/etcd"
   depends-on = "${module.s3.dependency}"
 
   #Template variables
-  cluster-domain           = "${var.cluster-domain}"
-  cluster-name             = "${var.cluster-name}"
-  dns-service-ip           = "${var.dns-service-ip}"
-  internal-tld             = "${var.internal-tld}"
-  hyperkube-image          = "${var.hyperkube-image}"
-  hyperkube-tag            = "${var.hyperkube-tag}"
-  pod-ip-range             = "${var.pod-ip-range}"
-  service-cluster-ip-range = "${var.service-cluster-ip-range}"
+  internal-tld = "${var.internal-tld}"
   adminregion              = "${var.adminregion}"
   bucketname               = "${var.bucketname}"
-  cacertobject             = "${var.cacertobject}"
-  etcdcertobject           = "${var.etcdcertobject}"
-  etcdkeyobject            = "${var.etcdkeyobject}"
+  capem             = "${var.capem}"
+  etcdpem           = "${var.etcdpem}"
+  etcdkey            = "${var.etcdkey}"
 
   lc_name              = "${var.lc_name}"
   ownerid              = "${var.ownerid}"
@@ -128,6 +123,9 @@ module "kubemaster" {
 module "kubenode" {
   source = "./modules/kubernetes/kubenode"
 }
+
+*/
+
 
 #module "kubeadmin" {
 

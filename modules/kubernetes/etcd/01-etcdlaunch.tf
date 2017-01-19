@@ -5,9 +5,9 @@ data "template_file" "kubeetcd" {
     internal-tld   = "${ var.internal-tld }"
     region         = "${ var.adminregion }"
     bucket         = "${ var.bucketname }"
-    cacertobject   = "${var.cacertobject}"
-    etcdcertobject = "${var.etcdcertobject}"
-    etcdkeyobject  = "${var.etcdkeyobject}"
+    cacertobject   = "${var.capem}"
+    etcdcertobject = "${var.etcdpem}"
+    etcdkeyobject  = "${var.etcdkey}"
   }
 }
 

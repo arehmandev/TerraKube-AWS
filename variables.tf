@@ -109,13 +109,3 @@ variable "hyperkube-tag" {}
 variable "pod-ip-range" {}
 
 variable "service-cluster-ip-range" {}
-
-## Bucket related
-
-variable "cacertobject" {}
-
-variable "cakeyobject" {}
-
-variable "etcdcertobject" {}
-
-variable "etcdkeyobject" {}

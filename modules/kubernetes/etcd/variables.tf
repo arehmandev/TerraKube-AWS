@@ -3,31 +3,17 @@
 variable "depends-on" {}
 
 # template variables
-variable "cluster-domain" {}
-
-variable "cluster-name" {}
-
-variable "dns-service-ip" {}
+variable "adminregion" {}
 
 variable "internal-tld" {}
 
-variable "hyperkube-image" {}
-
-variable "hyperkube-tag" {}
-
-variable "pod-ip-range" {}
-
-variable "service-cluster-ip-range" {}
-
-variable "adminregion" {}
-
 variable "bucketname" {}
 
-variable "cacertobject" {}
+variable "capem" {}
 
-variable "etcdcertobject" {}
+variable "etcdpem" {}
 
-variable "etcdkeyobject" {}
+variable "etcdkey" {}
 
 ### ASG variables
 

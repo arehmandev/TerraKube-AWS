@@ -92,10 +92,3 @@ hyperkube-image          = "quay.io/coreos/hyperkube"
 hyperkube-tag            = "v1.5.1_coreos.0"
 pod-ip-range             = "10.2.0.0/16"
 service-cluster-ip-range = "10.3.0.0/24"
-
-## Bucket related
-cacertobject = "ca.pem"
-cakeyobject = "ca-key.pem"
-
-etcdcertobject = "etcd.pem"
-etcdkeyobject = "etcd-key.pem"

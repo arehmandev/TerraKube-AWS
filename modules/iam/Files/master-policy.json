@@ -7,7 +7,7 @@
         "s3:Get*"
       ],
       "Effect": "Allow",
-      "Resource": [ "arn:aws:s3:::${kubebucket}" ]
+      "Resource": [ "arn:aws:s3:::${kubebucket}/*" ]
     },
     {
       "Action": [
