@@ -44,6 +44,12 @@ module "security" {
   iplock     = "${var.iplock}"
 }
 
+module "elbcreate" {
+  source          = "./modules/elb/elbcreate"
+  security_groups = "${module.security.aws_security_group.etcd}"
+  subnets         = ["${module.vpc.aws_subnet.private2.id}", "${module.vpc.aws_subnet.private1.id}"]
+}
+
 #3
 module "route53" {
   source       = "./modules/route53"
@@ -92,6 +98,7 @@ module "etcd" {
   etcdkey      = "${var.etcdkey}"
 
   lc_name              = "${var.lc_name}"
+  load_balancer_names  = "${module.elbcreate.elb_name}"
   ownerid              = "${var.ownerid}"
   ami_name             = "${var.ami_name}"
   channel              = "${var.channel}"

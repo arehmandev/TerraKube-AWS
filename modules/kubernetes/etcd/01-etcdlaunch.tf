@@ -66,6 +66,8 @@ resource "aws_autoscaling_group" "main_asg" {
   health_check_grace_period = "${var.health_check_grace_period}"
   health_check_type         = "${var.health_check_type}"
 
+  load_balancers = ["${split(",", var.load_balancer_names)}"]
+
   tag {
     key                 = "Name"
     value               = "etcd-cluster"

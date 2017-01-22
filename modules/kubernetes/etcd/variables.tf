@@ -19,6 +19,10 @@ variable "etcdkey" {}
 
 variable "lc_name" {}
 
+variable "load_balancer_names" {
+  description = "ELB name the ASG should associate instances with"
+}
+
 variable "instance_type" {}
 
 variable "iam_instance_profile" {}
