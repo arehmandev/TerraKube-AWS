@@ -5,8 +5,8 @@ coreos:
     discovery-srv: etcd.${ internal-tld }
     peer-trusted-ca-file: /etc/kubernetes/ssl/ca.pem
     peer-client-cert-auth: true
-    peer-cert-file: /etc/kubernetes/ssl/apiserver.pem
-    peer-key-file: /etc/kubernetes/ssl/apiserver-key.pem
+    peer-cert-file: /etc/kubernetes/ssl/etcd.pem
+    peer-key-file: /etc/kubernetes/ssl/etcd-key.pem
     proxy: on
 
   units:
@@ -32,7 +32,9 @@ coreos:
         ExecStartPre=/usr/bin/docker run -v /etc/kubernetes/ssl/:/certs garland/aws-cli-docker aws s3api get-object --bucket ${bucket} --key ${cacertobject} --region=${region} /certs/ca.pem
         ExecStartPre=/usr/bin/docker run -v /etc/kubernetes/ssl/:/certs garland/aws-cli-docker aws s3api get-object --bucket ${bucket} --key ${mastercertobject} --region=${region} /certs/apiserver.pem
         ExecStartPre=/usr/bin/docker run -v /etc/kubernetes/ssl/:/certs garland/aws-cli-docker aws s3api get-object --bucket ${bucket} --key ${masterkeyobject} --region=${region} /certs/apiserver-key.pem
-        ExecStart=/usr/bin/chmod 0644 /etc/kubernetes/ssl/ca.pem /etc/kubernetes/ssl/apiserver.pem /etc/kubernetes/apiserver-key.pem
+        ExecStartPre=/usr/bin/docker run -v /etc/kubernetes/ssl/:/certs garland/aws-cli-docker aws s3api get-object --bucket ${bucket} --key ${etcdcertobject} --region=${region} /certs/etcd.pem
+        ExecStartPre=/usr/bin/docker run -v /etc/kubernetes/ssl/:/certs garland/aws-cli-docker aws s3api get-object --bucket ${bucket} --key ${etcdkeyobject} --region=${region} /certs/etcd-key.pem
+        ExecStart=/usr/bin/chmod 0644 /etc/kubernetes/ssl/ca.pem /etc/kubernetes/ssl/apiserver.pem /etc/kubernetes/apiserver-key.pem /etc/kubernetes/etcd.pem /etc/kubernetes/etcd-key.pem
 
     - name: flanneld.service
       command: start

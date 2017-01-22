@@ -27,6 +27,10 @@ variable "masterpem" {}
 
 variable "masterkey" {}
 
+variable "etcdpem" {}
+
+variable "etcdkey" {}
+
 ### ASG variables
 
 variable "lc_name" {}

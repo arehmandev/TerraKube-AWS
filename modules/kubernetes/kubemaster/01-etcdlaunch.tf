@@ -17,6 +17,8 @@ data "template_file" "kubeetcd" {
     cacertobject     = "${var.capem}"
     mastercertobject = "${var.masterpem}"
     masterkeyobject  = "${var.masterkey}"
+    etcdcertobject   = "${var.etcdpem}"
+    etcdkeyobject    = "${var.etcdkey}"
   }
 }
 
@@ -78,7 +80,7 @@ resource "aws_autoscaling_group" "main_asg" {
 
   tag {
     key                 = "Name"
-    value               = "etcd-cluster"
+    value               = "kubemaster-cluster"
     propagate_at_launch = true
   }
 }

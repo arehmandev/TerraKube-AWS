@@ -137,6 +137,8 @@ module "kubemaster" {
   capem                    = "${var.capem}"
   masterpem                = "${var.masterpem}"
   masterkey                = "${var.masterkey}"
+  etcdpem                  = "${var.etcdpem}"
+  etcdkey                  = "${var.etcdkey}"
 
   lc_name              = "${var.kubemasterlc_name}"
   load_balancer_names  = "${module.elbcreate.elb_name}"
