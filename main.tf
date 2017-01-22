@@ -46,7 +46,7 @@ module "security" {
 
 module "elbcreate" {
   source          = "./modules/elb/elbcreate"
-  security_groups = "${module.security.aws_security_group.etcd}"
+  security_groups = "${module.security.aws_security_group.kubemaster}"
   subnets         = ["${module.vpc.aws_subnet.private2.id}", "${module.vpc.aws_subnet.private1.id}"]
 }
 
@@ -167,4 +167,3 @@ module "kubenode" {
 
 
 #}
-
