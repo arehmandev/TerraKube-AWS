@@ -11,9 +11,9 @@ variable "bucketname" {}
 
 variable "capem" {}
 
-variable "etcdpem" {}
+variable "masterpem" {}
 
-variable "etcdkey" {}
+variable "masterkey" {}
 
 ### ASG variables
 

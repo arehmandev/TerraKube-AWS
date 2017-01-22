@@ -6,8 +6,8 @@ data "template_file" "kubeetcd" {
     region         = "${ var.adminregion }"
     bucket         = "${ var.bucketname }"
     cacertobject   = "${var.capem}"
-    etcdcertobject = "${var.etcdpem}"
-    etcdkeyobject  = "${var.etcdkey}"
+    mastercertobject = "${var.masterpem}"
+    masterkeyobject  = "${var.masterkey}"
   }
 }
 

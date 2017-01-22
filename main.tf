@@ -129,8 +129,8 @@ module "kubemaster" {
   adminregion  = "${var.adminregion}"
   bucketname   = "${var.bucketname}"
   capem        = "${var.capem}"
-  etcdpem      = "${var.etcdpem}"
-  etcdkey      = "${var.etcdkey}"
+  masterpem      = "${var.masterpem}"
+  masterkey      = "${var.masterkey}"
 
   lc_name              = "${var.kubemasterlc_name}"
   load_balancer_names  = "${module.elbcreate.elb_name}"
