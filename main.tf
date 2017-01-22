@@ -97,8 +97,7 @@ module "etcd" {
   etcdpem      = "${var.etcdpem}"
   etcdkey      = "${var.etcdkey}"
 
-  lc_name              = "${var.lc_name}"
-  load_balancer_names  = "${module.elbcreate.elb_name}"
+  lc_name              = "${var.etcdlc_name}"
   ownerid              = "${var.ownerid}"
   ami_name             = "${var.ami_name}"
   channel              = "${var.channel}"
@@ -109,9 +108,9 @@ module "etcd" {
   security_group       = "${module.security.aws_security_group.etcd}"
   userdata             = "Files/kubeetcd.yml"
 
-  asg_name                        = "${var.asg_name}"
-  asg_number_of_instances         = "${var.asg_number_of_instances}"
-  asg_minimum_number_of_instances = "${var.asg_minimum_number_of_instances}"
+  asg_name                        = "${var.etcd_asg_name}"
+  asg_number_of_instances         = "${var.etcd_asg_number_of_instances}"
+  asg_minimum_number_of_instances = "${var.etcd_asg_minimum_number_of_instances}"
 
   azs        = ["${lookup(var.subnetaz1, var.adminregion)}", "${lookup(var.subnetaz2, var.adminregion)}"]
   subnet_azs = ["${module.vpc.aws_subnet.private1.id}", "${module.vpc.aws_subnet.private2.id}"]
@@ -122,7 +121,39 @@ module "etcd" {
 }
 
 module "kubemaster" {
-  source = "./modules/kubernetes/kubemaster"
+  source     = "./modules/kubernetes/kubemaster"
+  depends-on = "${module.s3.dependency}"
+
+  #Template variables
+  internal-tld = "${var.internal-tld}"
+  adminregion  = "${var.adminregion}"
+  bucketname   = "${var.bucketname}"
+  capem        = "${var.capem}"
+  etcdpem      = "${var.etcdpem}"
+  etcdkey      = "${var.etcdkey}"
+
+  lc_name              = "${var.kubemasterlc_name}"
+  load_balancer_names  = "${module.elbcreate.elb_name}"
+  ownerid              = "${var.ownerid}"
+  ami_name             = "${var.ami_name}"
+  channel              = "${var.channel}"
+  virtualization_type  = "${var.virtualization_type}"
+  instance_type        = "${var.coresize}"
+  iam_instance_profile = "${module.iam.worker_profile_name}"
+  key_name             = "${var.key_name}"
+  security_group       = "${module.security.aws_security_group.kubemaster}"
+  userdata             = "Files/kubemaster.yml"
+
+  asg_name                        = "${var.kubemaster_asg_name}"
+  asg_number_of_instances         = "${var.kubemaster_asg_number_of_instances}"
+  asg_minimum_number_of_instances = "${var.kubemaster_asg_minimum_number_of_instances}"
+
+  azs        = ["${lookup(var.subnetaz1, var.adminregion)}", "${lookup(var.subnetaz2, var.adminregion)}"]
+  subnet_azs = ["${module.vpc.aws_subnet.private1.id}", "${module.vpc.aws_subnet.private2.id}"]
+
+  # To have the master instances in public subnets:
+
+  #subnet_azs = ["${module.vpc.aws_subnet.public1.id}", "${module.vpc.aws_subnet.public2.id}"]
 }
 
 module "kubenode" {

@@ -72,7 +72,7 @@ worker_role_name = "worker_role"
 ###### Etcd module
 
 # Launch config
-lc_name = "Etcd-lc"
+etcdlc_name = "Etcd-lc"
 coresize = "t2.micro"
 ownerid = "595879546273"
 ami_name = "CoreOS"
@@ -80,9 +80,9 @@ channel = "stable"
 virtualization_type ="hvm"
 
 # Autoscaling groups
-asg_name = "Etcd-asg"
-asg_number_of_instances = "3"
-asg_minimum_number_of_instances = "3"
+etcd_asg_name = "Etcd-asg"
+etcd_asg_number_of_instances = "3"
+etcd_asg_minimum_number_of_instances = "3"
 
 ## Template variables
 
@@ -92,3 +92,13 @@ hyperkube-image          = "quay.io/coreos/hyperkube"
 hyperkube-tag            = "v1.5.1_coreos.0"
 pod-ip-range             = "10.2.0.0/16"
 service-cluster-ip-range = "10.3.0.0/24"
+
+
+###### kubemaster module
+# Launch config
+kubemasterlc_name = "Kubemaster-lc"
+
+# Autoscaling groups
+kubemaster_asg_name = "Etcd-asg"
+kubemaster_asg_number_of_instances = "3"
+kubemaster_asg_minimum_number_of_instances = "3"

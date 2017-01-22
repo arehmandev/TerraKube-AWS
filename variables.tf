@@ -77,7 +77,7 @@ variable "worker_role_name" {}
 ###### Etcd module
 
 ## Launch config
-variable "lc_name" {}
+variable "etcdlc_name" {}
 
 variable "coresize" {}
 
@@ -91,11 +91,11 @@ variable "virtualization_type" {}
 
 ## Autoscaling groups
 
-variable "asg_name" {}
+variable "etcd_asg_name" {}
 
-variable "asg_number_of_instances" {}
+variable "etcd_asg_number_of_instances" {}
 
-variable "asg_minimum_number_of_instances" {}
+variable "etcd_asg_minimum_number_of_instances" {}
 
 ## Template variables
 variable "cluster-domain" {}
@@ -109,3 +109,16 @@ variable "hyperkube-tag" {}
 variable "pod-ip-range" {}
 
 variable "service-cluster-ip-range" {}
+
+#### Kubemaster module
+
+## Launch config
+variable "kubemasterlc_name" {}
+
+## Autoscaling groups
+
+variable "kubemaster_asg_name" {}
+
+variable "kubemaster_asg_number_of_instances" {}
+
+variable "kubemaster_asg_minimum_number_of_instances" {}
