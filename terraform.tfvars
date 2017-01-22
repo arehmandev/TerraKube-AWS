@@ -99,6 +99,6 @@ service-cluster-ip-range = "10.3.0.0/24"
 kubemasterlc_name = "Kubemaster-lc"
 
 # Autoscaling groups
-kubemaster_asg_name = "Etcd-asg"
+kubemaster_asg_name = "kubemaster-asg"
 kubemaster_asg_number_of_instances = "3"
 kubemaster_asg_minimum_number_of_instances = "3"
