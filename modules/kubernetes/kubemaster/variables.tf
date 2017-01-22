@@ -5,6 +5,8 @@ variable "depends-on" {}
 # template variables
 variable "adminregion" {}
 
+variable "etcdasg" {}
+
 variable "internal-tld" {}
 
 variable "bucketname" {}

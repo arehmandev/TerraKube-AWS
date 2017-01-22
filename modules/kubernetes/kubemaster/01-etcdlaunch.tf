@@ -6,6 +6,7 @@ data "template_file" "kubeetcd" {
     region       = "${ var.adminregion }"
     bucket       = "${ var.bucketname }"
 
+    etcdasg                  = "${var.etcdasg}"
     cluster-domain           = "${ var.cluster-domain }"
     dns-service-ip           = "${ var.dns-service-ip }"
     hyperkube                = "${ var.hyperkube-image }:${ var.hyperkube-tag }"

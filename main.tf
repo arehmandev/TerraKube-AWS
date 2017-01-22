@@ -120,11 +120,13 @@ module "etcd" {
   #subnet_azs = ["${module.vpc.aws_subnet.public1.id}", "${module.vpc.aws_subnet.public2.id}"]
 }
 
+### under development
 module "kubemaster" {
   source     = "./modules/kubernetes/kubemaster"
   depends-on = "${module.s3.dependency}"
 
   #Template variables
+  etcdasg                  = "${module.etcd.asg_id}"
   internal-tld             = "${var.internal-tld}"
   adminregion              = "${var.adminregion}"
   bucketname               = "${var.bucketname}"
@@ -164,6 +166,7 @@ module "kubemaster" {
   #subnet_azs = ["${module.vpc.aws_subnet.public1.id}", "${module.vpc.aws_subnet.public2.id}"]
 }
 
+/*
 module "kubenode" {
   source = "./modules/kubernetes/kubenode"
 }
@@ -175,4 +178,6 @@ module "kubenode" {
 
 
 #}
+
+*/
 
