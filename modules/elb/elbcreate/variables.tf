@@ -3,7 +3,7 @@ variable "elb_name" {
 }
 
 variable "health_check_target" {
-  default = "HTTP:2379/health"
+  default = "HTTP:8080/healthz"
 }
 
 variable "subnets" {

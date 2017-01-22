@@ -125,12 +125,18 @@ module "kubemaster" {
   depends-on = "${module.s3.dependency}"
 
   #Template variables
-  internal-tld = "${var.internal-tld}"
-  adminregion  = "${var.adminregion}"
-  bucketname   = "${var.bucketname}"
-  capem        = "${var.capem}"
-  masterpem      = "${var.masterpem}"
-  masterkey      = "${var.masterkey}"
+  internal-tld             = "${var.internal-tld}"
+  adminregion              = "${var.adminregion}"
+  bucketname               = "${var.bucketname}"
+  cluster-domain           = "${ var.cluster-domain }"
+  dns-service-ip           = "${ var.dns-service-ip }"
+  hyperkube-image          = "${ var.hyperkube-image }"
+  hyperkube-tag            = "${ var.hyperkube-tag }"
+  pod-ip-range             = "${ var.pod-ip-range }"
+  service-cluster-ip-range = "${ var.service-cluster-ip-range }"
+  capem                    = "${var.capem}"
+  masterpem                = "${var.masterpem}"
+  masterkey                = "${var.masterkey}"
 
   lc_name              = "${var.kubemasterlc_name}"
   load_balancer_names  = "${module.elbcreate.elb_name}"
@@ -167,3 +173,4 @@ module "kubenode" {
 
 
 #}
+

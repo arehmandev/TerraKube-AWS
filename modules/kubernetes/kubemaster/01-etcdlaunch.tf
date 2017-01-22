@@ -2,10 +2,19 @@ data "template_file" "kubeetcd" {
   template = "${file("${path.module}/${var.userdata}")}"
 
   vars {
-    internal-tld   = "${ var.internal-tld }"
-    region         = "${ var.adminregion }"
-    bucket         = "${ var.bucketname }"
-    cacertobject   = "${var.capem}"
+    internal-tld = "${ var.internal-tld }"
+    region       = "${ var.adminregion }"
+    bucket       = "${ var.bucketname }"
+
+    cluster-domain           = "${ var.cluster-domain }"
+    dns-service-ip           = "${ var.dns-service-ip }"
+    hyperkube                = "${ var.hyperkube-image }:${ var.hyperkube-tag }"
+    hyperkube-image          = "${ var.hyperkube-image }"
+    hyperkube-tag            = "${ var.hyperkube-tag }"
+    pod-ip-range             = "${ var.pod-ip-range }"
+    service-cluster-ip-range = "${ var.service-cluster-ip-range }"
+
+    cacertobject     = "${var.capem}"
     mastercertobject = "${var.masterpem}"
     masterkeyobject  = "${var.masterkey}"
   }

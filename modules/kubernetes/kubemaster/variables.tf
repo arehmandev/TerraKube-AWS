@@ -9,6 +9,18 @@ variable "internal-tld" {}
 
 variable "bucketname" {}
 
+variable "cluster-domain" {}
+
+variable "dns-service-ip" {}
+
+variable "hyperkube-image" {}
+
+variable "hyperkube-tag" {}
+
+variable "pod-ip-range" {}
+
+variable "service-cluster-ip-range" {}
+
 variable "capem" {}
 
 variable "masterpem" {}
