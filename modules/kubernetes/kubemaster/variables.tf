@@ -78,7 +78,7 @@ variable "health_check_grace_period" {
 }
 
 variable "health_check_type" {
-  default = "ELB"
+  default = "EC2"
 }
 
 variable "subnet_azs" {

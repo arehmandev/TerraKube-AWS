@@ -11,11 +11,10 @@ resource "aws_security_group" "kubemaster" {
 
   # Allows inbound and outbound traffic from all instances in the VPC.
   ingress {
-    from_port       = "0"
-    to_port         = "0"
-    protocol        = "-1"
-    self            = true
-    security_groups = ["${aws_security_group.kubenode.id}", "${aws_security_group.etcd.id}", "${aws_security_group.bastion.id}"]
+    from_port = "0"
+    to_port   = "0"
+    protocol  = "-1"
+    self      = true
   }
   ingress {
     from_port   = 22
