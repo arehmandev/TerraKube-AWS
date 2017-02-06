@@ -2,8 +2,8 @@ resource "aws_autoscaling_group" "etcd_asg_az1" {
   depends_on = ["aws_launch_configuration.launch_config"]
   name       = "${var.asg_name_az1}"
 
-  availability_zones  = "${var.az1}"
-  vpc_zone_identifier = "${var.subnet_in_az1}"
+  availability_zones  = ["${var.az1}"]
+  vpc_zone_identifier = ["${var.subnet_in_az1}"]
 
   launch_configuration = "${aws_launch_configuration.launch_config.id}"
 
@@ -24,8 +24,8 @@ resource "aws_autoscaling_group" "etcd_asg_az2" {
   depends_on = ["aws_launch_configuration.launch_config"]
   name       = "${var.asg_name_az2}"
 
-  availability_zones  = "${var.az2}"
-  vpc_zone_identifier = "${var.subnet_in_az2}"
+  availability_zones  = ["${var.az2}"]
+  vpc_zone_identifier = ["${var.subnet_in_az2}"]
 
   launch_configuration = "${aws_launch_configuration.launch_config.id}"
 
@@ -46,8 +46,8 @@ resource "aws_autoscaling_group" "etcd_asg_az3" {
   depends_on = ["aws_launch_configuration.launch_config"]
   name       = "${var.asg_name_az3}"
 
-  availability_zones  = "${var.az3}"
-  vpc_zone_identifier = "${var.subnet_in_az3}"
+  availability_zones  = ["${var.az3}"]
+  vpc_zone_identifier = ["${var.subnet_in_az3}"]
 
   launch_configuration = "${aws_launch_configuration.launch_config.id}"
 

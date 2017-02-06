@@ -103,9 +103,20 @@ etcd_nodes_az3 = {
 }
 
 # Autoscaling groups
-etcd_asg_name = "Etcd-asg"
-etcd_asg_number_of_instances = "3"
-etcd_asg_minimum_number_of_instances = "3"
+etcd_asg_name_az1 = "Etcd-asg1"
+etcd_asg_maxsize_az1 = "1"
+etcd_asg_minsize_az1 = "1"
+etcd_asg_normsize_az1 = "1"
+
+etcd_asg_name_az2 = "Etcd-asg2"
+etcd_asg_maxsize_az2 = "1"
+etcd_asg_minsize_az2 = "1"
+etcd_asg_normsize_az2 = "1"
+
+etcd_asg_name_az3 = "Etcd-asg3"
+etcd_asg_maxsize_az3 = "1"
+etcd_asg_minsize_az3 = "1"
+etcd_asg_normsize_az3 = "1"
 
 ## Template variables
 

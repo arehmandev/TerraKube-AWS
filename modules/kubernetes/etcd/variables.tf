@@ -122,18 +122,15 @@ variable "subnet_in_az3" {
 ## Availability Zones specified in VPC module
 
 variable "az1" {
-  description = "Availability Zones"
-  type        = "list"
+  description = "Availability Zone 1"
 }
 
 variable "az2" {
-  description = "Availability Zones"
-  type        = "list"
+  description = "Availability Zone 2"
 }
 
 variable "az3" {
-  description = "Availability Zones"
-  type        = "list"
+  description = "Availability Zone 3"
 }
 
 # ASG Health checks - switch EC2 to ELB if attaching ELB
