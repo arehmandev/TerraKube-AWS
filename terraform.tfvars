@@ -92,6 +92,8 @@ virtualization_type ="hvm"
 # Node IPs
 etcd_nodes_az1 = {
   "node0" = "10.0.0.10"
+  "node1" = "10.0.0.11"
+  "node2" = "10.0.0.12"
 }
 
 etcd_nodes_az2 = {

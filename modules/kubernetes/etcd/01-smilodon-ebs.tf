@@ -29,7 +29,7 @@ resource "aws_ebs_volume" "etcd_volumes_az2" {
     Env               = "${var.environment}"
     KubernetesCluster = "${var.environment}"
     Name              = "${var.environment}-etcd-node${count.index}"
-    NodeID            = "${count.index} + ${aws_ebs_volume.etcd_volumes_az1.count}"
+    NodeID            = "${count.index + aws_ebs_volume.etcd_volumes_az1.count}"
   }
 }
 
@@ -46,6 +46,6 @@ resource "aws_ebs_volume" "etcd_volumes_az3" {
     Env               = "${var.environment}"
     KubernetesCluster = "${var.environment}"
     Name              = "${var.environment}-etcd-node${count.index}"
-    NodeID            = "${count.index} + ${aws_ebs_volume.etcd_volumes_az1.count} + ${aws_ebs_volume.etcd_volumes_az2.count}"
+    NodeID            = "${count.index + aws_ebs_volume.etcd_volumes_az1.count + aws_ebs_volume.etcd_volumes_az2.count}"
   }
 }
