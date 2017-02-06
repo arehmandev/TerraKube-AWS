@@ -39,11 +39,11 @@ variable "security_group" {
   description = "The security group the instances to use"
 }
 
-variable "asg_name" {}
-
-variable "asg_number_of_instances" {
-  description = "The number of instances we want in the ASG"
+variable "etcd_nodes" {
+  type = "map"
 }
+
+variable "asg_name" {}
 
 variable "asg_minimum_number_of_instances" {
   description = "The minimum number of instances the ASG should maintain"

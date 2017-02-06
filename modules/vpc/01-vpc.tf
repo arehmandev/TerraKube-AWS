@@ -17,7 +17,7 @@ resource "aws_internet_gateway" "internet-gateway" {
   }
 }
 
-# Create 2 Elastic IPs for the natgateways
+# Create Elastic IPs for the natgateways
 resource "aws_eip" "nat1" {
   vpc        = true
   depends_on = ["aws_internet_gateway.internet-gateway"]
@@ -28,7 +28,12 @@ resource "aws_eip" "nat2" {
   depends_on = ["aws_internet_gateway.internet-gateway"]
 }
 
-#Create 2 NAT gateways for each AZ and it will depend on the internet gateway creation
+resource "aws_eip" "nat3" {
+  vpc        = true
+  depends_on = ["aws_internet_gateway.internet-gateway"]
+}
+
+#Create NAT gateways for each AZ and it will depend on the internet gateway creation
 resource "aws_nat_gateway" "nat1" {
   allocation_id = "${aws_eip.nat1.id}"
   subnet_id     = "${aws_subnet.public1.id}"
@@ -38,5 +43,11 @@ resource "aws_nat_gateway" "nat1" {
 resource "aws_nat_gateway" "nat2" {
   allocation_id = "${aws_eip.nat2.id}"
   subnet_id     = "${aws_subnet.public2.id}"
+  depends_on    = ["aws_internet_gateway.internet-gateway"]
+}
+
+resource "aws_nat_gateway" "nat3" {
+  allocation_id = "${aws_eip.nat3.id}"
+  subnet_id     = "${aws_subnet.public3.id}"
   depends_on    = ["aws_internet_gateway.internet-gateway"]
 }

@@ -12,30 +12,37 @@ vpc_cidr = "10.0.0.0/16"
 # 2 Private CIDRs
 private1_cidr = "10.0.0.0/24"
 private2_cidr = "10.0.1.0/24"
+private3_cidr = "10.0.2.0/24"
+
 
 # 2 Public CIDRs
-public1_cidr  = "10.0.2.0/24"
-public2_cidr  = "10.0.3.0/24"
+public1_cidr  = "10.0.3.0/24"
+public2_cidr  = "10.0.4.0/24"
+public3_cidr  = "10.0.5.0/24"
+
 
 # Subnet Availability zones
 subnetaz1 = {
   us-east-1 = "us-east-1a"
   us-east-2 = "us-east-2a"
-  us-west-1 = "us-west-1a"
   us-west-2 = "us-west-2a"
   eu-west-1 = "eu-west-1a"
-  eu-west-2 = "eu-west-2a"
-  eu-central-1 = "eu-central-1a"
 }
 
 subnetaz2 = {
   us-east-1 = "us-east-1c"
   us-east-2 = "us-east-2b"
-  us-west-1 = "us-west-1b"
   us-west-2 = "us-west-2b"
   eu-west-1 = "eu-west-1b"
-  eu-west-2 = "eu-west-2b"
-  eu-central-1 = "eu-central-1b"
+
+}
+
+subnetaz3 = {
+  us-east-1 = "us-east-1d"
+  us-east-2 = "us-east-2c"
+  us-west-2 = "us-west-2c"
+  eu-west-1 = "eu-west-1c"
+
 }
 
 ### Module security
@@ -64,6 +71,9 @@ adminkey = "adminkey.pem"
 
 bucketname = "kubernetes-certs"
 
+## Route53 module
+k8s-serviceip = "10.3.0.1"
+
 ## IAM module
 master_role_name = "master_role"
 worker_role_name = "worker_role"
@@ -78,6 +88,13 @@ ownerid = "595879546273"
 ami_name = "CoreOS"
 channel = "stable"
 virtualization_type ="hvm"
+
+# Node IPs
+etcd_nodes = {
+  "node0" = "10.0.0.10"
+  "node1" = "10.0.0.11"
+  "node2" = "10.0.0.12"
+}
 
 # Autoscaling groups
 etcd_asg_name = "Etcd-asg"

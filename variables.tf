@@ -19,10 +19,14 @@ variable "private1_cidr" {}
 
 variable "private2_cidr" {}
 
+variable "private3_cidr" {}
+
 # 2 Public CIDRs
 variable "public1_cidr" {}
 
 variable "public2_cidr" {}
+
+variable "public3_cidr" {}
 
 # Subnet Availability zones
 
@@ -31,6 +35,10 @@ variable "subnetaz1" {
 }
 
 variable "subnetaz2" {
+  type = "map"
+}
+
+variable "subnetaz3" {
   type = "map"
 }
 
@@ -67,6 +75,10 @@ variable "adminpem" {}
 variable "adminkey" {}
 
 variable "bucketname" {}
+
+## TLS module
+
+variable "k8s-serviceip" {}
 
 ## IAM module
 

@@ -7,7 +7,7 @@ provider "aws" {
 module "tls" {
   source        = "./modules/tls"
   internal-tld  = "${var.internal-tld}"
-  k8s-serviceip = "10.3.0.1"
+  k8s-serviceip = "${var.k8s-serviceip}"
   adminregion   = "${var.adminregion}"
   capem         = "${var.capem}"
   cakey         = "${var.cakey}"
@@ -30,10 +30,13 @@ module "vpc" {
   vpc_cidr        = "${var.vpc_cidr}"
   private1_cidr   = "${var.private1_cidr}"
   private2_cidr   = "${var.private2_cidr}"
+  private3_cidr   = "${var.private3_cidr}"
   public1_cidr    = "${var.public1_cidr}"
   public2_cidr    = "${var.public2_cidr}"
+  public3_cidr    = "${var.public3_cidr}"
   subnetaz1       = "${var.subnetaz1}"
   subnetaz2       = "${var.subnetaz2}"
+  subnetaz3       = "${var.subnetaz3}"
 }
 
 #
@@ -85,6 +88,8 @@ module "s3" {
   adminkey    = "${var.adminkey}"
 }
 
+/*
+
 module "etcd" {
   source     = "./modules/kubernetes/etcd"
   depends-on = "${module.s3.dependency}"
@@ -109,75 +114,11 @@ module "etcd" {
   userdata             = "Files/kubeetcd.yml"
 
   asg_name                        = "${var.etcd_asg_name}"
-  asg_number_of_instances         = "${var.etcd_asg_number_of_instances}"
   asg_minimum_number_of_instances = "${var.etcd_asg_minimum_number_of_instances}"
 
   azs        = ["${lookup(var.subnetaz1, var.adminregion)}", "${lookup(var.subnetaz2, var.adminregion)}"]
   subnet_azs = ["${module.vpc.aws_subnet.private1.id}", "${module.vpc.aws_subnet.private2.id}"]
-
-  # To have the etcd instances in public subnets:
-
-  #subnet_azs = ["${module.vpc.aws_subnet.public1.id}", "${module.vpc.aws_subnet.public2.id}"]
 }
-
-### under development
-module "kubemaster" {
-  source     = "./modules/kubernetes/kubemaster"
-  depends-on = "${module.s3.dependency}"
-
-  #Template variables
-  etcdasg                  = "${module.etcd.asg_id}"
-  internal-tld             = "${var.internal-tld}"
-  adminregion              = "${var.adminregion}"
-  bucketname               = "${var.bucketname}"
-  cluster-domain           = "${ var.cluster-domain }"
-  dns-service-ip           = "${ var.dns-service-ip }"
-  hyperkube-image          = "${ var.hyperkube-image }"
-  hyperkube-tag            = "${ var.hyperkube-tag }"
-  pod-ip-range             = "${ var.pod-ip-range }"
-  service-cluster-ip-range = "${ var.service-cluster-ip-range }"
-  capem                    = "${var.capem}"
-  masterpem                = "${var.masterpem}"
-  masterkey                = "${var.masterkey}"
-  etcdpem                  = "${var.etcdpem}"
-  etcdkey                  = "${var.etcdkey}"
-
-  lc_name              = "${var.kubemasterlc_name}"
-  load_balancer_names  = "${module.elbcreate.elb_name}"
-  ownerid              = "${var.ownerid}"
-  ami_name             = "${var.ami_name}"
-  channel              = "${var.channel}"
-  virtualization_type  = "${var.virtualization_type}"
-  instance_type        = "${var.coresize}"
-  iam_instance_profile = "${module.iam.worker_profile_name}"
-  key_name             = "${var.key_name}"
-  security_group       = "${module.security.aws_security_group.kubemaster}"
-  userdata             = "Files/kubemaster.yml"
-
-  asg_name                        = "${var.kubemaster_asg_name}"
-  asg_number_of_instances         = "${var.kubemaster_asg_number_of_instances}"
-  asg_minimum_number_of_instances = "${var.kubemaster_asg_minimum_number_of_instances}"
-
-  azs        = ["${lookup(var.subnetaz1, var.adminregion)}", "${lookup(var.subnetaz2, var.adminregion)}"]
-  subnet_azs = ["${module.vpc.aws_subnet.private1.id}", "${module.vpc.aws_subnet.private2.id}"]
-
-  # To have the master instances in public subnets:
-
-  #subnet_azs = ["${module.vpc.aws_subnet.public1.id}", "${module.vpc.aws_subnet.public2.id}"]
-}
-
-/*
-module "kubenode" {
-  source = "./modules/kubernetes/kubenode"
-}
-
-#module "kubeadmin" {
-
-
-#  source = "./modules/kubernetes/kubeadmin"
-
-
-#}
 
 */
 
