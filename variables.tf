@@ -103,7 +103,15 @@ variable "virtualization_type" {}
 
 ## Autoscaling groups
 
-variable "etcd_nodes" {
+variable "etcd_nodes_az1" {
+  type = "map"
+}
+
+variable "etcd_nodes_az2" {
+  type = "map"
+}
+
+variable "etcd_nodes_az3" {
   type = "map"
 }
 

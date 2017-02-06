@@ -100,7 +100,10 @@ module "etcd" {
   etcdpem      = "${var.etcdpem}"
   etcdkey      = "${var.etcdkey}"
 
-  etcd_nodes = "${var.etcd_nodes}"
+  etcd_nodes_az1 = "${var.etcd_nodes_az1}"
+  etcd_nodes_az2 = "${var.etcd_nodes_az2}"
+  etcd_nodes_az3 = "${var.etcd_nodes_az3}"
+
   lc_name              = "${var.etcdlc_name}"
   ownerid              = "${var.ownerid}"
   ami_name             = "${var.ami_name}"
