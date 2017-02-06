@@ -2,9 +2,11 @@
 
 Plan for dev:
 
-1. Etcd - smilodon ENI creation *in progress
+1. Etcd - smilodon ENI creation *complete*
 
-2. Etcd - smilodon EBS creation
+2. Etcd - smilodon EBS creation *complete* 
+
+---- requires testing *
 
 3. Etcd - data Template
 

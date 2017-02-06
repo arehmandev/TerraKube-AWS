@@ -11,6 +11,7 @@ resource "aws_network_interface" "etcd_eni_az1" {
     Env     = "${var.environment}"
     Name    = "${var.environment}-etcd-data"
     NodeID  = "${count.index}"
+    AZ      = "${var.az1}"
     Role    = "etcd-eni"
     Service = "etcd"
   }
@@ -29,6 +30,7 @@ resource "aws_network_interface" "etcd_eni_az2" {
     Env     = "${var.environment}"
     Name    = "${var.environment}-etcd-data"
     NodeID  = "${count.index} + ${aws_network_interface.etcd_eni_az1.count}"
+    AZ      = "${var.az2}"
     Role    = "etcd-eni"
     Service = "etcd"
   }
@@ -47,6 +49,7 @@ resource "aws_network_interface" "etcd_eni_az3" {
     Env     = "${var.environment}"
     Name    = "${var.environment}-etcd-data"
     NodeID  = "${count.index} + ${aws_network_interface.etcd_eni_az1.count} + ${aws_network_interface.etcd_eni_az2.count}"
+    AZ      = "${var.az3}"
     Role    = "etcd-eni"
     Service = "etcd"
   }

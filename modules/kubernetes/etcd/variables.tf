@@ -150,3 +150,17 @@ variable "health_check_type" {
 variable "environment" {
   default = "Staging"
 }
+
+## EBS volumes
+
+variable "ebs_encrypted" {
+  default = "True"
+}
+
+variable "ebs_size" {
+  default = "20"
+}
+
+variable "ebs_type" {
+  default = "standard"
+}
