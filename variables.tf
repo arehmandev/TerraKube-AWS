@@ -103,11 +103,33 @@ variable "virtualization_type" {}
 
 ## Autoscaling groups
 
-variable "etcd_asg_name" {}
+variable "etcd_nodes" {
+  type = "map"
+}
 
-variable "etcd_asg_number_of_instances" {}
+variable "etcd_asg_name_az1" {}
 
-variable "etcd_asg_minimum_number_of_instances" {}
+variable "etcd_asg_maxsize_az1" {}
+
+variable "etcd_asg_minsize_az1" {}
+
+variable "etcd_asg_normsize_az1" {}
+
+variable "etcd_asg_name_az2" {}
+
+variable "etcd_asg_maxsize_az2" {}
+
+variable "etcd_asg_minsize_az2" {}
+
+variable "etcd_asg_normsize_az2" {}
+
+variable "etcd_asg_name_az3" {}
+
+variable "etcd_asg_maxsize_az3" {}
+
+variable "etcd_asg_minsize_az3" {}
+
+variable "etcd_asg_normsize_az3" {}
 
 ## Template variables
 variable "cluster-domain" {}

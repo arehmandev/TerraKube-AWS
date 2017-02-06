@@ -88,8 +88,6 @@ module "s3" {
   adminkey    = "${var.adminkey}"
 }
 
-/*
-
 module "etcd" {
   source     = "./modules/kubernetes/etcd"
   depends-on = "${module.s3.dependency}"
@@ -102,6 +100,7 @@ module "etcd" {
   etcdpem      = "${var.etcdpem}"
   etcdkey      = "${var.etcdkey}"
 
+  etcd_nodes = "${var.etcd_nodes}"
   lc_name              = "${var.etcdlc_name}"
   ownerid              = "${var.ownerid}"
   ami_name             = "${var.ami_name}"
@@ -113,12 +112,26 @@ module "etcd" {
   security_group       = "${module.security.aws_security_group.etcd}"
   userdata             = "Files/kubeetcd.yml"
 
-  asg_name                        = "${var.etcd_asg_name}"
-  asg_minimum_number_of_instances = "${var.etcd_asg_minimum_number_of_instances}"
+  asg_name_az1     = "${var.etcd_asg_name_az1}"
+  asg_maxsize_az1  = "${var.etcd_asg_maxsize_az1}"
+  asg_minsize_az1  = "${var.etcd_asg_minsize_az1}"
+  asg_normsize_az1 = "${var.etcd_asg_normsize_az1}"
 
-  azs        = ["${lookup(var.subnetaz1, var.adminregion)}", "${lookup(var.subnetaz2, var.adminregion)}"]
-  subnet_azs = ["${module.vpc.aws_subnet.private1.id}", "${module.vpc.aws_subnet.private2.id}"]
+  asg_name_az2     = "${var.etcd_asg_name_az2}"
+  asg_maxsize_az2  = "${var.etcd_asg_maxsize_az2}"
+  asg_minsize_az2  = "${var.etcd_asg_minsize_az2}"
+  asg_normsize_az2 = "${var.etcd_asg_normsize_az2}"
+
+  asg_name_az3     = "${var.etcd_asg_name_az3}"
+  asg_maxsize_az3  = "${var.etcd_asg_maxsize_az3}"
+  asg_minsize_az3  = "${var.etcd_asg_minsize_az3}"
+  asg_normsize_az3 = "${var.etcd_asg_normsize_az3}"
+
+  subnet_in_az1 = "${module.vpc.aws_subnet.private1.id}"
+  subnet_in_az2 = "${module.vpc.aws_subnet.private2.id}"
+  subnet_in_az3 = "${module.vpc.aws_subnet.private3.id}"
+
+  az1 = "${lookup(var.subnetaz1, var.adminregion)}"
+  az2 = "${lookup(var.subnetaz2, var.adminregion)}"
+  az3 = "${lookup(var.subnetaz3, var.adminregion)}"
 }
-
-*/
-

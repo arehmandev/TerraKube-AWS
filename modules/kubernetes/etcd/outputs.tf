@@ -8,6 +8,14 @@ output "launch_config_id" {
 }
 
 // Output the ID of the Launch Config
-output "asg_id" {
-  value = "${aws_autoscaling_group.main_asg.id}"
+output "asg_az1_id" {
+  value = "${aws_autoscaling_group.etcd_asg_az1.id}"
+}
+
+output "asg_az2_id" {
+  value = "${aws_autoscaling_group.etcd_asg_az2.id}"
+}
+
+output "asg_az3_id" {
+  value = "${aws_autoscaling_group.etcd_asg_az3.id}"
 }

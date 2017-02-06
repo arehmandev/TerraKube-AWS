@@ -19,14 +19,6 @@ variable "etcdkey" {}
 
 variable "lc_name" {}
 
-variable "instance_type" {}
-
-variable "iam_instance_profile" {}
-
-variable "userdata" {}
-
-variable "key_name" {}
-
 variable "ownerid" {}
 
 variable "ami_name" {}
@@ -35,20 +27,108 @@ variable "channel" {}
 
 variable "virtualization_type" {}
 
-variable "security_group" {
-  description = "The security group the instances to use"
-}
+variable "instance_type" {}
+
+variable "iam_instance_profile" {}
+
+variable "key_name" {}
+
+variable "security_group" {}
+
+variable "userdata" {}
 
 variable "etcd_nodes" {
   type = "map"
 }
 
-variable "asg_name" {}
+### ASG configuration for each AZ
 
-variable "asg_minimum_number_of_instances" {
+variable "asg_name_az1" {}
+
+variable "asg_maxsize_az1" {
   description = "The minimum number of instances the ASG should maintain"
   default     = 1
 }
+
+variable "asg_minsize_az1" {
+  description = "The minimum number of instances the ASG should maintain"
+  default     = 1
+}
+
+variable "asg_normsize_az1" {
+  description = "The minimum number of instances the ASG should maintain"
+  default     = 1
+}
+
+variable "asg_name_az2" {}
+
+variable "asg_maxsize_az2" {
+  description = "The minimum number of instances the ASG should maintain"
+  default     = 1
+}
+
+variable "asg_minsize_az2" {
+  description = "The minimum number of instances the ASG should maintain"
+  default     = 1
+}
+
+variable "asg_normsize_az2" {
+  description = "The minimum number of instances the ASG should maintain"
+  default     = 1
+}
+
+variable "asg_name_az3" {}
+
+variable "asg_maxsize_az3" {
+  description = "The minimum number of instances the ASG should maintain"
+  default     = 1
+}
+
+variable "asg_minsize_az3" {
+  description = "The minimum number of instances the ASG should maintain"
+  default     = 1
+}
+
+variable "asg_normsize_az3" {
+  description = "The minimum number of instances the ASG should maintain"
+  default     = 1
+}
+
+# Subnet IDs for ASG
+
+variable "subnet_in_az1" {
+  description = "The VPC subnet ID in AZ1"
+  type        = "list"
+}
+
+variable "subnet_in_az2" {
+  description = "The VPC subnet IDs in AZ2"
+  type        = "list"
+}
+
+variable "subnet_in_az3" {
+  description = "The VPC subnet IDs in AZ3"
+  type        = "list"
+}
+
+## Availability Zones specified in VPC module
+
+variable "az1" {
+  description = "Availability Zones"
+  type        = "list"
+}
+
+variable "az2" {
+  description = "Availability Zones"
+  type        = "list"
+}
+
+variable "az3" {
+  description = "Availability Zones"
+  type        = "list"
+}
+
+# ASG Health checks - switch EC2 to ELB if attaching ELB
 
 variable "health_check_grace_period" {
   description = "Number of seconds for a health check to time out"
@@ -59,16 +139,6 @@ variable "health_check_type" {
   default = "EC2"
 }
 
-variable "subnet_azs" {
-  description = "The VPC subnet IDs"
-  type        = "list"
-
-  // comma separated list
-}
-
-variable "azs" {
-  description = "Availability Zones"
-  type        = "list"
-
-  // comma separated list
+variable "environment" {
+  default = "Staging"
 }
