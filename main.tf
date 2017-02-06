@@ -110,7 +110,7 @@ module "etcd" {
   channel              = "${var.channel}"
   virtualization_type  = "${var.virtualization_type}"
   instance_type        = "${var.coresize}"
-  iam_instance_profile = "${module.iam.worker_profile_name}"
+  iam_instance_profile = "${module.iam.master_profile_name}"
   key_name             = "${var.key_name}"
   security_group       = "${module.security.aws_security_group.etcd}"
   userdata             = "Files/kubeetcd.yml"
