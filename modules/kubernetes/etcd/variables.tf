@@ -158,3 +158,15 @@ variable "ebs_size" {
 variable "ebs_type" {
   default = "standard"
 }
+
+# smilodon
+
+variable "smilodon_release_url" {
+  description = "The release URL for the smilodon binary"
+  default     = "https://github.com/UKHomeOffice/smilodon/releases/download/v0.0.4/smilodon-0.0.4-linux-amd64"
+}
+
+variable "smilodon_release_md5" {
+  description = "The release MD5 for the smilodon binary"
+  default     = "071d32e53fdb53fa17c7bbe03744fdf6"
+}

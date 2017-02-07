@@ -1,1 +1,30 @@
+#cloud-config
 
+coreos:
+  etcd2:
+  advertise-client-urls: http://$private_ipv4:2379,http://$private_ipv4:4001
+  initial-advertise-peer-urls: http://$private_ipv4:2380
+  listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+  listen-peer-urls: http://$private_ipv4:2380,http://$private_ipv4:7001
+  initial-cluster-state: new
+  initial-cluster-token: etcd-terrakube-cluster
+  initial-cluster: ${etcd_memberlist}
+
+  units:
+  - name: smilodon.service
+    command: start
+    enable: true
+    content: |
+      [Unit]
+      Description=Smilodon - manage ebs+eni attachment
+      [Service]
+      Environment="URL=${smilodon_release_url}"
+      Environment="OUTPUT_FILE=/opt/bin/smilodon"
+      Environment="MD5SUM=${smilodon_release_md5}"
+      EnvironmentFile=/etc/aws-environment
+      ExecStartPre=/usr/bin/mkdir -p /opt/bin
+      ExecStartPre=/usr/bin/bash -c 'until [[ -x $${OUTPUT_FILE} ]] && [[ $(md5sum $${OUTPUT_FILE} | cut -f1 -d" ") == $${MD5SUM} ]]; do wget -q -O $${OUTPUT_FILE} $${URL} && chmod +x $${OUTPUT_FILE}; done'
+      ExecStart=/opt/bin/smilodon --filters=tag:Env=${environment}
+      Restart=always
+      RestartSec=10
+      TimeoutStartSec=300
