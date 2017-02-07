@@ -89,18 +89,17 @@ ami_name = "CoreOS"
 channel = "stable"
 virtualization_type ="hvm"
 
-# Node IPs
+# Node IPs - must always be an odd number of etcd nodes (default 3)
 etcd_nodes_az1 = {
   "node0" = "10.0.0.10"
-
 }
 
 etcd_nodes_az2 = {
-  "node0" = "10.0.1.10"
+  "node1" = "10.0.1.10"
 }
 
 etcd_nodes_az3 = {
-  "node0" = "10.0.2.10"
+  "node2" = "10.0.2.10"
 }
 
 # Autoscaling groups

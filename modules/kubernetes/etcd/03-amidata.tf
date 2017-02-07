@@ -8,12 +8,19 @@ data "template_file" "kubeetcd" {
     cacertobject         = "${var.capem}"
     etcdcertobject       = "${var.etcdpem}"
     etcdkeyobject        = "${var.etcdkey}"
-    etcd_memberlist      = "${join(",", formatlist("%s=https://%s:2380", concat(keys(var.etcd_nodes_az1), keys(var.etcd_nodes_az2), keys(var.etcd_nodes_az3)), concat(values(var.etcd_nodes_az1), values(var.etcd_nodes_az2), values(var.etcd_nodes_az3))))}"
+    etcd_memberlist      = "${join(",", concat(formatlist("%s=https://%s:2380", keys(var.etcd_nodes_az1), values(var.etcd_nodes_az1)), formatlist("%s=https://%s:2380", keys(var.etcd_nodes_az2), values(var.etcd_nodes_az2)), formatlist("%s=https://%s:2380", keys(var.etcd_nodes_az3), values(var.etcd_nodes_az3)) ))}"
     smilodon_release_md5 = "${var.smilodon_release_md5}"
     smilodon_release_url = "${var.smilodon_release_url}"
     environment          = "${var.environment}"
   }
 }
+
+# Was used to test output of interpolation
+#resource "null_resource" "test" {
+#  provisioner "local-exec" {
+#    command = "echo '${join(",", concat(formatlist("%s=https://%s:2380", keys(var.etcd_nodes_az1), values(var.etcd_nodes_az1)), formatlist("%s=https://%s:2380", keys(var.etcd_nodes_az2), values(var.etcd_nodes_az2)), formatlist("%s=https://%s:2380", keys(var.etcd_nodes_az3), values(var.etcd_nodes_az3)) ))}' > ${path.module}/generatedlist.txt"
+#  }
+#}
 
 data "aws_ami" "coreos_etcd" {
   most_recent = true
