@@ -106,17 +106,14 @@ variable "asg_normsize_az3" {
 
 variable "subnet_in_az1" {
   description = "The VPC subnet ID in AZ1"
-  type        = "list"
 }
 
 variable "subnet_in_az2" {
   description = "The VPC subnet IDs in AZ2"
-  type        = "list"
 }
 
 variable "subnet_in_az3" {
   description = "The VPC subnet IDs in AZ3"
-  type        = "list"
 }
 
 ## Availability Zones specified in VPC module
