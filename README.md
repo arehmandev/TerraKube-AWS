@@ -4,11 +4,11 @@ Plan for dev:
 
 1. Etcd - smilodon ENI creation *complete*
 
-2. Etcd - smilodon EBS creation *complete* 
+2. Etcd - smilodon EBS creation *complete*
 
----- requires testing *
+3. Etcd - data Template *initial testing complete*
 
-3. Etcd - data Template
+--
 
 4. Kube master seperate module with ELB attachment
 
