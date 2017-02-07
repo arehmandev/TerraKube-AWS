@@ -21,7 +21,6 @@ coreos:
       Environment="URL=${smilodon_release_url}"
       Environment="OUTPUT_FILE=/opt/bin/smilodon"
       Environment="MD5SUM=${smilodon_release_md5}"
-      EnvironmentFile=/etc/aws-environment
       ExecStartPre=/usr/bin/mkdir -p /opt/bin
       ExecStartPre=/usr/bin/bash -c 'until [[ -x $${OUTPUT_FILE} ]] && [[ $(md5sum $${OUTPUT_FILE} | cut -f1 -d" ") == $${MD5SUM} ]]; do wget -q -O $${OUTPUT_FILE} $${URL} && chmod +x $${OUTPUT_FILE}; done'
       ExecStart=/opt/bin/smilodon --filters=tag:Env=${environment}
