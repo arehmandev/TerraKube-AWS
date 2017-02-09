@@ -59,7 +59,7 @@ coreos:
   - name: kmsctl-certs.service
     command: start
     enable: true
-    content : |
+    content: |
       [Unit]
       Description=KMSCtl - download certs
       [Service]
