@@ -5,10 +5,6 @@ coreos:
     initial-cluster-state: new
     initial-cluster-token: etcd-terrakube-cluster
     initial-cluster: ${etcd_memberlist}
-    cert-file: /etc/ssl/kubernetes/etcd.pem
-    key-file: /etc/ssl/kubernetes/etcdkey.pem
-    peer-cert-file: /etc/ssl/kubernetes/etcd.pem
-    peer-key-file: /etc/ssl/kubernetes/etcdkey.pem
   units:
   - name: etcd2.service
     command: start
@@ -30,13 +26,10 @@ coreos:
         ExecStart=/usr/bin/etcd2 --name=node$${NODE_ID} \
           --initial-advertise-peer-urls=https://$${NODE_IP}:2380 \
           --listen-peer-urls=https://$${NODE_IP}:2380 \
-          --listen-client-urls=https://$${NODE_IP}:2379,https://127.0.0.1:2379 \
+          --listen-client-urls=https://0.0.0.0:2379 \
           --advertise-client-urls=https://$${NODE_IP}:2379
   - name: systemd-sysctl.service
     command: restart
-  - name: iptables-restore.service
-    enable: true
-    command: start
   - name: smilodon.service
     command: start
     enable: true
@@ -65,11 +58,13 @@ coreos:
       [Service]
       ExecStartPre=/usr/bin/mkdir -p /opt/bin
       ExecStartPre=/usr/bin/mkdir -p /etc/ssl/kubernetes/
+      ExecStartPre=/usr/bin/chmod 0744 /etc/ssl/kubernetes
       ExecStartPre=/usr/bin/wget https://github.com/gambol99/kmsctl/releases/download/v1.0.4/kmsctl-linux-amd64 -O /opt/bin/kmsctl
       ExecStartPre=/usr/bin/chmod +x /opt/bin/kmsctl
       ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ ${etcdcertobject}
       ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ ${etcdkeyobject}
       ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ ${cacertobject}
+      ExecStartPre=/usr/bin/chmod 0644 /etc/ssl/kubernetes/${etcdcertobject} /etc/ssl/kubernetes/${etcdkeyobject} /etc/ssl/kubernetes/${cacertobject}
       ExecStart=/usr/bin/echo "Completed Cert downloads"
       Restart=always
       RestartSec=10
@@ -105,17 +100,7 @@ coreos:
         Environment="DOCKER_OPTS=--iptables=false --log-opt max-size=100m --log-opt max-file=1 --default-ulimit=nofile=32768:32768 --default-ulimit=nproc=16384:16384"
 
 write_files:
-# Note: the newline post COMMIT is required by iptables-restore
-- path: /var/lib/iptables/rules-save
-  content: |
-    *filter
-    :INPUT ACCEPT [0:0]
-    :FORWARD ACCEPT [0:0]
-    -A FORWARD -d 169.254.169.254/32 -i docker0 -p tcp -m tcp -j DROP
-    -A FORWARD -i docker0 -p tcp -m tcp --dport 2379 -j DROP
-    :OUTPUT ACCEPT [0:0]
-    COMMIT
-
+#
 - path: /etc/sysctl.d/10-disable-ipv6.conf
   permissions: 0644
   owner: root
@@ -135,3 +120,13 @@ write_files:
     AWS_REGION=${region}
     DNS_ZONE_NAME=${zonename}
     ENVIRONMENT=${environment}
+- path: /run/systemd/system/etcd2.service.d/30-certificates.conf
+  permissions: 0644
+  content: |
+    [Service]
+    Environment=ETCD_PEER_TRUSTED_CA_FILE=/etc/ssl/kubernetes/ca.pem
+    Environment=ETCD_PEER_CLIENT_CERT_AUTH=true
+    Environment=ETCD_PEER_CERT_FILE=/etc/ssl/kubernetes/etcd.pem
+    Environment=ETCD_PEER_KEY_FILE=/etc/ssl/kubernetes/etcdkey.pem
+    Environment=ETCD_CERT_FILE=/etc/ssl/kubernetes/etcd.pem
+    Environment=ETCD_KEY_FILE=/etc/ssl/kubernetes/etcdkey.pem
