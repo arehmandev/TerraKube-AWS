@@ -31,7 +31,7 @@ resource "null_resource" "arn" {
 }
 
 data "template_file" "kmspolicy" {
-  depends_on = ["null_resource.arn", "null_resource.kubearn"]
+  depends_on = ["null_resource.arn", "null_resource.kubearn", "null_resource.kubearn2"]
   template   = "${file("${path.module}/Files/kmspolicy.json.tpl")}"
 
   vars {
