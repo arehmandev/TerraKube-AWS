@@ -99,6 +99,7 @@ module "etcd" {
   capem        = "${var.capem}"
   etcdpem      = "${var.etcdpem}"
   etcdkey      = "${var.etcdkey}"
+  zonename     = "${module.route53.internal-zone-id}"
 
   etcd_nodes_az1 = "${var.etcd_nodes_az1}"
   etcd_nodes_az2 = "${var.etcd_nodes_az2}"
@@ -137,4 +138,34 @@ module "etcd" {
   az1 = "${lookup(var.subnetaz1, var.adminregion)}"
   az2 = "${lookup(var.subnetaz2, var.adminregion)}"
   az3 = "${lookup(var.subnetaz3, var.adminregion)}"
+}
+
+module "etcdbastion" {
+  source = "./modules/kubernetes/etcd-bastion"
+
+  #Template variables
+  adminregion    = "${var.adminregion}"
+  etcd_nodes_az1 = "${var.etcd_nodes_az1}"
+  etcd_nodes_az2 = "${var.etcd_nodes_az2}"
+  etcd_nodes_az3 = "${var.etcd_nodes_az3}"
+
+  lc_name              = "${var.bastion_lc_name}"
+  ownerid              = "${var.ownerid}"
+  ami_name             = "${var.ami_name}"
+  channel              = "${var.channel}"
+  virtualization_type  = "${var.virtualization_type}"
+  instance_type        = "${var.coresize}"
+  iam_instance_profile = "${module.iam.worker_profile_name}"
+  key_name             = "${var.key_name}"
+  security_group       = "${module.security.aws_security_group.bastion}"
+  userdata             = "Files/bastion.yml"
+
+  asg_name                        = "${var.bastion_asg_name}"
+  asg_number_of_instances         = "${var.bastion_asg_number_of_instances}"
+  asg_minimum_number_of_instances = "${var.bastion_asg_minimum_number_of_instances}"
+
+  azs        = ["${lookup(var.subnetaz1, var.adminregion)}", "${lookup(var.subnetaz2, var.adminregion)}", "${lookup(var.subnetaz3, var.adminregion)}"]
+  subnet_azs = ["${module.vpc.aws_subnet.public1.id}", "${module.vpc.aws_subnet.public2.id}", "${module.vpc.aws_subnet.public3.id}"]
+
+  # The etcd bastion(s) is spread between the public subnets
 }

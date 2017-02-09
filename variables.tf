@@ -164,3 +164,13 @@ variable "kubemaster_asg_name" {}
 variable "kubemaster_asg_number_of_instances" {}
 
 variable "kubemaster_asg_minimum_number_of_instances" {}
+
+## Etcd bastion
+
+variable "bastion_asg_minimum_number_of_instances" {}
+
+variable "bastion_asg_number_of_instances" {}
+
+variable "bastion_lc_name" {}
+
+variable "bastion_asg_name" {}

@@ -2,15 +2,47 @@
 
 coreos:
   etcd2:
-  advertise-client-urls: http://$private_ipv4:2379,http://$private_ipv4:4001
-  initial-advertise-peer-urls: http://$private_ipv4:2380
-  listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
-  listen-peer-urls: http://$private_ipv4:2380,http://$private_ipv4:7001
-  initial-cluster-state: new
-  initial-cluster-token: etcd-terrakube-cluster
-  initial-cluster: ${etcd_memberlist}
-
+    initial-cluster-state: new
+    initial-cluster-token: etcd-terrakube-cluster
+    initial-cluster: ${etcd_memberlist}
+    cert-file: /run/etcd2/etcd.pem
+    key-file: /run/etcd2/etcdkey.pem
+    peer-cert-file: /run/etcd2/etcd.pem
+    peer-key-file: /run/etcd2/etcdkey.pem
   units:
+  - name: etcd2.service
+    command: start
+    enable: true
+    drop-ins:
+    - name: 15-deps.conf
+      content: |
+        [Unit]
+        After=smilodon.service
+        Requires=smilodon.service
+        [Service]
+        PermissionsStartOnly=true
+        RuntimeDirectory=etcd2
+        RuntimeDirectoryMode=0700
+        EnvironmentFile=/run/smilodon/environment
+        RestartSec=30
+        Restart=always
+        ExecStartPre=/usr/bin/mkdir -p /opt/bin
+        ExecStartPre= wget https://github.com/gambol99/kmsctl/releases/download/v1.0.4/kmsctl-linux-amd64 -o /opt/bin/kmsctl
+        ExecStartPre= chmod +x /opt/bin/kmsctl
+        ExecStartPre= ./kmsctl --region ${region} get -b ${bucket} -d /run/etcd2/ ${etcdcertobject}
+        ExecStartPre= ./kmsctl --region ${region} get -b ${bucket} -d /run/etcd2/ ${etcdkeyobject}
+        ExecStartPre= ./kmsctl --region ${region} get -b ${bucket} -d /run/etcd2/ ${cacertobject}
+        ExecStart=
+        ExecStart=/usr/bin/etcd2 --name=node$${NODE_ID} \
+          --initial-advertise-peer-urls=https://$${NODE_IP}:2380 \
+          --listen-peer-urls=https://$${NODE_IP}:2380 \
+          --listen-client-urls=https://$${NODE_IP}:2379,https://127.0.0.1:2379 \
+          --advertise-client-urls=https://$${NODE_IP}:2379
+  - name: systemd-sysctl.service
+    command: restart
+  - name: iptables-restore.service
+    enable: true
+    command: start
   - name: smilodon.service
     command: start
     enable: true
@@ -21,9 +53,71 @@ coreos:
       Environment="URL=${smilodon_release_url}"
       Environment="OUTPUT_FILE=/opt/bin/smilodon"
       Environment="MD5SUM=${smilodon_release_md5}"
+      EnvironmentFile=/etc/aws-environment
       ExecStartPre=/usr/bin/mkdir -p /opt/bin
       ExecStartPre=/usr/bin/bash -c 'until [[ -x $${OUTPUT_FILE} ]] && [[ $(md5sum $${OUTPUT_FILE} | cut -f1 -d" ") == $${MD5SUM} ]]; do wget -q -O $${OUTPUT_FILE} $${URL} && chmod +x $${OUTPUT_FILE}; done'
       ExecStart=/opt/bin/smilodon --filters=tag:Env=${environment}
       Restart=always
       RestartSec=10
       TimeoutStartSec=300
+# Workaround until this has been fixed: https://github.com/systemd/systemd/issues/1784
+  - name: networkd-restart.service
+    command: start
+    enable: true
+    content: |
+      [Unit]
+      Description=Restart systemd-networkd when DOWN interface is found
+      [Service]
+      ExecStart=/usr/bin/bash -c 'while true; do ip -o -4 link show | grep -q "eth[0-1]:.*state DOWN" && systemctl restart systemd-networkd; sleep 60; done'
+      Restart=always
+      RestartSec=10
+  - name: 20-eth1.network
+    runtime: false
+    content: |
+      [Match]
+      Name=eth1
+      [Network]
+      DHCP=ipv4
+      [DHCP]
+      UseDNS=false
+      SendHostname=true
+      UseRoutes=false
+      RouteMetric=2048
+  - name: docker.service
+    drop-ins:
+    - name: 10-opts.conf
+      content: |
+        [Service]
+        Environment="DOCKER_OPTS=--iptables=false --log-opt max-size=100m --log-opt max-file=1 --default-ulimit=nofile=32768:32768 --default-ulimit=nproc=16384:16384"
+
+write_files:
+# Note: the newline post COMMIT is required by iptables-restore
+- path: /var/lib/iptables/rules-save
+  content: |
+    *filter
+    :INPUT ACCEPT [0:0]
+    :FORWARD ACCEPT [0:0]
+    -A FORWARD -d 169.254.169.254/32 -i docker0 -p tcp -m tcp -j DROP
+    -A FORWARD -i docker0 -p tcp -m tcp --dport 2379 -j DROP
+    :OUTPUT ACCEPT [0:0]
+    COMMIT
+
+- path: /etc/sysctl.d/10-disable-ipv6.conf
+  permissions: 0644
+  owner: root
+  content: |
+    net.ipv6.conf.all.disable_ipv6 = 1
+- path: /etc/sysctl.d/baselayout.conf
+  permissions: 0644
+  owner: root
+  content: |
+    net.ipv4.ip_forward = 1
+    net.ipv4.conf.default.rp_filter = 2
+    net.ipv4.conf.all.rp_filter = 2
+    kernel.kptr_restrict = 1
+- path: /etc/aws-environment
+  permissions: 0444
+  content: |
+    AWS_REGION=${region}
+    DNS_ZONE_NAME=${zonename}
+    ENVIRONMENT=${environment}

@@ -12,6 +12,7 @@ data "template_file" "kubeetcd" {
     smilodon_release_md5 = "${var.smilodon_release_md5}"
     smilodon_release_url = "${var.smilodon_release_url}"
     environment          = "${var.environment}"
+    zonename             = "${var.zonename}"
   }
 }
 

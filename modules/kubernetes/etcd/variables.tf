@@ -170,3 +170,5 @@ variable "smilodon_release_md5" {
   description = "The release MD5 for the smilodon binary"
   default     = "071d32e53fdb53fa17c7bbe03744fdf6"
 }
+
+variable "zonename" {}

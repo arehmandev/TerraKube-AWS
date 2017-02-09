@@ -5,6 +5,7 @@
       "Effect": "Allow",
       "Action": "s3:*",
       "Resource": [
+        "arn:aws:s3:::${kubebucket}",
         "arn:aws:s3:::${kubebucket}/*"
       ]
     },

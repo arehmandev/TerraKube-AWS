@@ -51,3 +51,21 @@ resource "aws_security_group_rule" "etcdtonode" {
   source_security_group_id = "${aws_security_group.etcd.id}"
   security_group_id        = "${aws_security_group.kubenode.id}"
 }
+
+resource "aws_security_group_rule" "etcdtobastion" {
+  type                     = "ingress"
+  from_port                = 0
+  to_port                  = 0
+  protocol                 = "-1"
+  source_security_group_id = "${aws_security_group.etcd.id}"
+  security_group_id        = "${aws_security_group.bastion.id}"
+}
+
+resource "aws_security_group_rule" "bastiontoetcd" {
+  type                     = "ingress"
+  from_port                = 0
+  to_port                  = 0
+  protocol                 = "-1"
+  source_security_group_id = "${aws_security_group.bastion.id}"
+  security_group_id        = "${aws_security_group.etcd.id}"
+}

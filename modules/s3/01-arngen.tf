@@ -10,7 +10,15 @@ resource "null_resource" "kubearn" {
   depends_on = ["null_resource.roledependency"]
 
   provisioner "local-exec" {
-    command = "echo $(${data.template_file.kubearn.rendered}) > ${path.module}/Files/worker_role_arn.txt"
+    command = "echo arn:aws:iam::$(bash ${path.module}/Files/workerarn.sh):role/worker_role > ${path.module}/Files/worker_role_arn.txt"
+  }
+}
+
+resource "null_resource" "kubearn2" {
+  depends_on = ["null_resource.roledependency"]
+
+  provisioner "local-exec" {
+    command = "echo arn:aws:iam::$(bash ${path.module}/Files/workerarn.sh):role/master_role > ${path.module}/Files/master_role_arn.txt"
   }
 }
 
@@ -27,7 +35,8 @@ data "template_file" "kmspolicy" {
   template   = "${file("${path.module}/Files/kmspolicy.json.tpl")}"
 
   vars {
-    arn     = "${replace(file("${path.module}/Files/worker_role_arn.txt"), "\n", "")}"
-    rootarn = "${replace(file("${path.module}/Files/root_arn.txt"), "\n", "")}"
+    arn       = "${replace(file("${path.module}/Files/worker_role_arn.txt"), "\n", "")}"
+    masterarn = "${replace(file("${path.module}/Files/master_role_arn.txt"), "\n", "")}"
+    rootarn   = "${replace(file("${path.module}/Files/root_arn.txt"), "\n", "")}"
   }
 }

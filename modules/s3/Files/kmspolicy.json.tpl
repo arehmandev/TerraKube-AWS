@@ -8,6 +8,7 @@
       "Principal": {
         "AWS": [
         "${arn}",
+        "${masterarn}",
         "${rootarn}"
         ]
       },
