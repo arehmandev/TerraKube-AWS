@@ -64,12 +64,12 @@ coreos:
       Description=KMSCtl - download certs
       [Service]
       ExecStartPre=/usr/bin/mkdir -p /opt/bin
-      ExecStartPre= wget https://github.com/gambol99/kmsctl/releases/download/v1.0.4/kmsctl-linux-amd64 -o /opt/bin/kmsctl
-      ExecStartPre= chmod +x /opt/bin/kmsctl
-      ExecStartPre= ./kmsctl --region ${region} get -b ${bucket} -d /run/etcd2/ ${etcdcertobject}
-      ExecStartPre= ./kmsctl --region ${region} get -b ${bucket} -d /run/etcd2/ ${etcdkeyobject}
-      ExecStartPre= ./kmsctl --region ${region} get -b ${bucket} -d /run/etcd2/ ${cacertobject}
-      ExecStart= echo "Completed Cert downloads"
+      ExecStartPre=wget https://github.com/gambol99/kmsctl/releases/download/v1.0.4/kmsctl-linux-amd64 -o /opt/bin/kmsctl
+      ExecStartPre=chmod +x /opt/bin/kmsctl
+      ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /run/etcd2/ ${etcdcertobject}
+      ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /run/etcd2/ ${etcdkeyobject}
+      ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /run/etcd2/ ${cacertobject}
+      ExecStart=echo "Completed Cert downloads"
       Restart=always
       RestartSec=10
       TimeoutStartSec=300
