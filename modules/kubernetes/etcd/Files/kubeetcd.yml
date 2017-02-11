@@ -12,15 +12,18 @@ coreos:
       content: |
         [Unit]
         Description=Etcd2 - unit for etcd
-        After=etcd-environment.service
-        Requires=etcd-environment.service
+        Wants=etcd-environment.service
         [Service]
-        Restart=always
-        RestartSec=10
+        PermissionsStartOnly=true
+        RuntimeDirectory=etcd2
+        RuntimeDirectoryMode=0700
         EnvironmentFile=/etc/etcd-environment
         EnvironmentFile=/run/smilodon/environment
+        ExecStartPre=/usr/bin/systemctl --quiet is-active etcd-environment.service
         ExecStart=
         ExecStart=/usr/bin/etcd2 --name=node$${NODE_ID}
+        Restart=on-failure
+        RestartSec=10
   - name: etcd-environment.service
     command: start
     enable: true
