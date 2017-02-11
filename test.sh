@@ -8,7 +8,7 @@ NODE_IP=10.0.1.10
           --initial-cluster node0=https://10.0.0.10:2380,node1=https://10.0.1.10:2380,node2=https://10.0.2.10:2380 \
           --initial-advertise-peer-urls https://${NODE_IP}:2380 \
           --listen-peer-urls https://${NODE_IP}:2380 \
-          --listen-client-urls https://${NODE_IP}:2379,http://127.0.0.1:2379 \
+          --listen-client-urls https://${NODE_IP}:2379,https://127.0.0.1:2379 \
           --advertise-client-urls https://${NODE_IP}:2379 \
           --client-cert-auth=true \
           --cert-file /etc/ssl/kubernetes/etcd.pem \

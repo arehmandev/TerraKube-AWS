@@ -3,17 +3,6 @@
 coreos:
   etcd2:
     initial-cluster-state: new
-    initial-cluster-token: etcd-terrakube-cluster
-    initial-cluster: ${etcd_memberlist}
-    data-dir: /var/lib/etcd2
-    client-cert-auth: true
-    cert-file: /etc/ssl/kubernetes/etcd.pem
-    key-file: /etc/ssl/kubernetes/etcdkey.pem
-    trusted-ca-file: /etc/ssl/kubernetes/ca.pem
-    peer-client-cert-auth: true
-    peer-trusted-ca-file: /etc/ssl/kubernetes/ca.pem
-    peer-cert-file: /etc/ssl/kubernetes/etcd.pem
-    peer-key-file: /etc/ssl/kubernetes/etcdkey.pem
   units:
   - name: etcd2.service
     command: start
@@ -28,15 +17,8 @@ coreos:
         PermissionsStartOnly=true
         RuntimeDirectory=etcd2
         RuntimeDirectoryMode=0700
-        EnvironmentFile=/run/smilodon/environment
-        RestartSec=30
-        Restart=always
-        ExecStart=
-        ExecStart=/usr/bin/etcd2 --name=node$${NODE_ID} \
-          --initial-advertise-peer-urls=https://$${NODE_IP}:2380 \
-          --listen-peer-urls=https://$${NODE_IP}:2380 \
-          --listen-client-urls=https://$${NODE_IP}:2379,https://127.0.0.1:2379 \
-          --advertise-client-urls=https://$${NODE_IP}:2379
+        Restart=on-failure
+        RestartSec=10
   - name: systemd-sysctl.service
     command: restart
   - name: smilodon.service
@@ -56,7 +38,7 @@ coreos:
       ExecStartPre=/usr/bin/bash -c 'until [[ -x $${OUTPUT_FILE} ]] && [[ $(md5sum $${OUTPUT_FILE} | cut -f1 -d" ") == $${MD5SUM} ]]; do wget -q -O $${OUTPUT_FILE} $${URL} && chmod +x $${OUTPUT_FILE}; done'
       ExecStart=/opt/bin/smilodon --filters=tag:Env=${environment}
       Restart=on-failure
-      RestartSec=300
+      RestartSec=10
   - name: kmsctl-certs.service
     command: start
     enable: true
@@ -139,3 +121,31 @@ write_files:
     export ETCDCTL_CA_FILE=/etc/ssl/kubernetes/ca.pem
     export ETCDCTL_CERT_FILE=/etc/ssl/kubernetes/etcd.pem
     export ETCDCTL_KEY_FILE=/etc/ssl/kubernetes/etcdkey.pem
+    source /run/smilodon/environment
+#### This is a hack around some silly termination issues ive been having with etcd
+- path: /etc/etcdstrap.sh
+  permissions: 0644
+  content: |
+    source /run/smilodon/environment
+    function myserver {
+    /usr/bin/etcd2 --name=node$${NODE_ID} \
+              --data-dir=/var/lib/etcd2 \
+              --initial-cluster ${etcd_memberlist} \
+              --initial-advertise-peer-urls https://$${NODE_IP}:2380 \
+              --listen-peer-urls https://$${NODE_IP}:2380 \
+              --listen-client-urls https://$${NODE_IP}:2379,https://127.0.0.1:2379 \
+              --advertise-client-urls https://$${NODE_IP}:2379 \
+              --client-cert-auth=true \
+              --cert-file /etc/ssl/kubernetes/etcd.pem \
+              --key-file /etc/ssl/kubernetes/etcdkey.pem \
+              --trusted-ca-file /etc/ssl/kubernetes/ca.pem\
+              --peer-client-cert-auth=true \
+              --peer-trusted-ca-file /etc/ssl/kubernetes/ca.pem \
+              --peer-cert-file /etc/ssl/kubernetes/etcd.pem \
+              --peer-key-file /etc/ssl/kubernetes/etcdkey.pem \
+              --initial-cluster-state new
+    }
+    until myserver; do
+        echo "Etcd Server crashed with exit code $?.  Respawning.." >&2
+        sleep 1
+    done
