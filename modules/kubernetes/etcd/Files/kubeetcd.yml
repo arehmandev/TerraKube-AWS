@@ -15,7 +15,7 @@ coreos:
         After=etcd-environment.service
         Requires=etcd-environment.service
         [Service]
-        Restart=on-failure
+        Restart=always
         RestartSec=10
         EnvironmentFile=/etc/etcd-environment
         EnvironmentFile=/run/smilodon/environment
