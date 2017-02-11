@@ -1,9 +1,9 @@
 #cloud-config
 
 coreos:
-  etcd2:
-    initial-cluster-state: new
   units:
+  - name: systemd-sysctl.service
+    command: restart
   - name: etcd2.service
     command: start
     enable: true
@@ -11,18 +11,33 @@ coreos:
     - name: 15-deps.conf
       content: |
         [Unit]
-        After=smilodon.service
-        Requires=smilodon.service
+        Description=Etcd2 - unit for etcd
+        After=etcd-environment.service
+        Requires=etcd-environment.service
         [Service]
-        PermissionsStartOnly=true
-        RuntimeDirectory=etcd2
-        RuntimeDirectoryMode=0700
-        ExecStart=
-        ExecStart=/usr/bin/bash /etc/etcdstrap.sh
         Restart=on-failure
         RestartSec=10
-  - name: systemd-sysctl.service
-    command: restart
+        EnvironmentFile=/etc/etcd-environment
+        EnvironmentFile=/run/smilodon/environment
+        ExecStart=
+        ExecStart=/usr/bin/etcd2 --name=node$${NODE_ID}
+  - name: etcd-environment.service
+    command: start
+    enable: true
+    content: |
+      [Unit]
+      Description=Smilodon - manage ebs+eni attachment
+      After=smilodon.service
+      Requires=smilodon.service
+      [Service]
+      EnvironmentFile=/run/smilodon/environment
+      ExecStartPre=/usr/bin/cat /etc/etcd-environment
+      ExecStartPre=/usr/bin/bash -c "echo 'Environment=ETCD_INITIAL_ADVERTISE_PEER_URLS=https://$${NODE_IP}:2380' >> /etc/etcd-environment"
+      ExecStartPre=/usr/bin/bash -c "echo 'Environment=ETCD_ADVERTISE_CLIENT_URLS=https://$${NODE_IP}:2379' >> /etc/etcd-environment"
+      ExecStartPre=/usr/bin/bash -c "awk '!seen[$0]++' /etc/etcd-environment  > /etc/aws-environment"
+      ExecStart=/usr/bin/echo "Environment file for etcd generated"
+      Restart=on-failure
+      RestartSec=10
   - name: smilodon.service
     command: start
     enable: true
@@ -95,9 +110,7 @@ coreos:
       content: |
         [Service]
         Environment="DOCKER_OPTS=--iptables=false --log-opt max-size=100m --log-opt max-file=1 --default-ulimit=nofile=32768:32768 --default-ulimit=nproc=16384:16384"
-
 write_files:
-#
 - path: /etc/sysctl.d/10-disable-ipv6.conf
   permissions: 0644
   owner: root
@@ -124,30 +137,21 @@ write_files:
     export ETCDCTL_CERT_FILE=/etc/ssl/kubernetes/etcd.pem
     export ETCDCTL_KEY_FILE=/etc/ssl/kubernetes/etcdkey.pem
     source /run/smilodon/environment
-#### This is a hack around some silly termination issues ive been having with etcd
-- path: /etc/etcdstrap.sh
+- path: /etc/etcd-environment
   permissions: 0644
   content: |
-    source /run/smilodon/environment
-    function myserver {
-    /usr/bin/etcd2 --name=node$${NODE_ID} \
-              --data-dir=/var/lib/etcd2 \
-              --initial-cluster ${etcd_memberlist} \
-              --initial-advertise-peer-urls https://$${NODE_IP}:2380 \
-              --listen-peer-urls https://$${NODE_IP}:2380 \
-              --listen-client-urls https://$${NODE_IP}:2379,https://127.0.0.1:2379 \
-              --advertise-client-urls https://$${NODE_IP}:2379 \
-              --client-cert-auth=true \
-              --cert-file /etc/ssl/kubernetes/etcd.pem \
-              --key-file /etc/ssl/kubernetes/etcdkey.pem \
-              --trusted-ca-file /etc/ssl/kubernetes/ca.pem\
-              --peer-client-cert-auth=true \
-              --peer-trusted-ca-file /etc/ssl/kubernetes/ca.pem \
-              --peer-cert-file /etc/ssl/kubernetes/etcd.pem \
-              --peer-key-file /etc/ssl/kubernetes/etcdkey.pem \
-              --initial-cluster-state new
-    }
-    until myserver; do
-        echo "Etcd Server crashed with exit code $?.  Respawning.." >&2
-        sleep 1
-    done
+    [Service]
+    Environment=ETCD_CA_FILE=/etc/ssl/kubernetes/ca.pem
+    Environment=ETCD_CERT_FILE=/etc/ssl/kubernetes/etcd.pem
+    Environment=ETCD_KEY_FILE=/etc/ssl/kubernetes/etcdkey.pem
+    Environment=ETCD_PEER_CA_FILE=/etc/ssl/kubernetes/ca.pem
+    Environment=ETCD_PEER_CERT_FILE=/etc/ssl/kubernetes/etcd.pem
+    Environment=ETCD_PEER_KEY_FILE=/etc/ssl/kubernetes/etcdkey.pem
+    Environment=ETCD_LISTEN_PEER_URLS=https://0.0.0.0:2380
+    Environment=ETCD_LISTEN_CLIENT_URLS=https://0.0.0.0:2379
+    Environment=ETCD_CLIENT_CERT_AUTH=true
+    Environment=ETCD_PEER_CLIENT_CERT_AUTH=true
+    Environment=ETCD_DATA_DIR=/var/lib/etcd2
+    Environment=ETCD_INITIAL_CLUSTER_STATE=new
+    Environment=ETCD_INITIAL_CLUSTER_TOKEN=etcd-terrakube
+    Environment=ETCD_INITIAL_CLUSTER=${etcd_memberlist}
