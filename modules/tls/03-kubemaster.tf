@@ -16,6 +16,13 @@ resource "tls_cert_request" "kubemaster" {
     "*.${var.adminregion}.elb.amazonaws.com",
   ]
 
+  ip_addresses = [
+    "${values(var.etcd_nodes_az1)}",
+    "${values(var.etcd_nodes_az2)}",
+    "${values(var.etcd_nodes_az3)}",
+    "${var.k8s-serviceip}",
+  ]
+
   subject {
     common_name  = "*"
     organization = "kubemaster"

@@ -17,6 +17,14 @@ resource "tls_cert_request" "etcd" {
     "etcd3.${var.internal-tld}",
   ]
 
+  ip_addresses = [
+    "${values(var.etcd_nodes_az1)}",
+    "${values(var.etcd_nodes_az2)}",
+    "${values(var.etcd_nodes_az3)}",
+    "${var.k8s-serviceip}",
+    "127.0.0.1",
+  ]
+
   subject {
     common_name  = "*"
     organization = "etcd"

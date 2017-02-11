@@ -1,52 +1,43 @@
 #cloud-config
 
 coreos:
-  etcd2:
-    initial-cluster-state: new
-    initial-cluster-token: etcd-terrakube-cluster
-    initial-cluster: ${etcd_memberlist}
-    data-dir: /var/lib/etcd2
-    client-cert-auth: true
-    cert-file: /etc/ssl/kubernetes/etcd.pem
-    key-file: /etc/ssl/kubernetes/etcdkey.pem
-    trusted-ca-file: /etc/ssl/kubernetes/ca.pem
-    peer-client-cert-auth: true
-    peer-trusted-ca-file: /etc/ssl/kubernetes/ca.pem
-    peer-cert-file: /etc/ssl/kubernetes/etcd.pem
-    peer-key-file: /etc/ssl/kubernetes/etcdkey.pem
   units:
-  - name: etcd2.service
-    command: start
-    enable: true
-    drop-ins:
-    - name: 15-deps.conf
-      content: |
-        [Unit]
-        After=smilodon.service
-        Requires=smilodon.service
-        [Service]
-        PermissionsStartOnly=true
-        RuntimeDirectory=etcd2
-        RuntimeDirectoryMode=0700
-        EnvironmentFile=/run/smilodon/environment
-        RestartSec=30
-        Restart=always
-        ExecStart=
-        ExecStart=/usr/bin/etcd2 --name=node$${NODE_ID} \
-          --initial-advertise-peer-urls=https://$${NODE_IP}:2380 \
-          --listen-peer-urls=https://$${NODE_IP}:2380 \
-          --listen-client-urls=https://$${NODE_IP}:2379,https://127.0.0.1:2379 \
-          --advertise-client-urls=https://$${NODE_IP}:2379
   - name: systemd-sysctl.service
     command: restart
+  - name: networkd-restart.service
+    command: start
+    enable: true
+    content: |
+      [Unit]
+      Description=Restart systemd-networkd when DOWN interface is found
+      [Service]
+      ExecStart=/usr/bin/bash -c 'while true; do ip -o -4 link show | grep -q "eth[0-1]:.*state DOWN" && systemctl restart systemd-networkd; sleep 60; done'
+      Restart=always
+      RestartSec=10
+  - name: 20-eth1.network
+    runtime: false
+    content: |
+      [Match]
+      Name=eth1
+      [Network]
+      DHCP=ipv4
+      [DHCP]
+      UseDNS=false
+      SendHostname=true
+      UseRoutes=false
+      RouteMetric=2048
+  - name: docker.service
+    drop-ins:
+    - name: 10-opts.conf
+      content: |
+        [Service]
+        Environment="DOCKER_OPTS=--iptables=false --log-opt max-size=100m --log-opt max-file=1 --default-ulimit=nofile=32768:32768 --default-ulimit=nproc=16384:16384"
   - name: smilodon.service
     command: start
     enable: true
     content: |
       [Unit]
       Description=Smilodon - manage ebs+eni attachment
-      After=kmsctl-certs.service
-      Requires=kmsctl-certs.service
       [Service]
       Environment="URL=${smilodon_release_url}"
       Environment="OUTPUT_FILE=/opt/bin/smilodon"
@@ -82,38 +73,8 @@ coreos:
       Restart=always
       RestartSec=10
       TimeoutStartSec=300
-# Workaround until this has been fixed: https://github.com/systemd/systemd/issues/1784
-  - name: networkd-restart.service
-    command: start
-    enable: true
-    content: |
-      [Unit]
-      Description=Restart systemd-networkd when DOWN interface is found
-      [Service]
-      ExecStart=/usr/bin/bash -c 'while true; do ip -o -4 link show | grep -q "eth[0-1]:.*state DOWN" && systemctl restart systemd-networkd; sleep 60; done'
-      Restart=always
-      RestartSec=10
-  - name: 20-eth1.network
-    runtime: false
-    content: |
-      [Match]
-      Name=eth1
-      [Network]
-      DHCP=ipv4
-      [DHCP]
-      UseDNS=false
-      SendHostname=true
-      UseRoutes=false
-      RouteMetric=2048
-  - name: docker.service
-    drop-ins:
-    - name: 10-opts.conf
-      content: |
-        [Service]
-        Environment="DOCKER_OPTS=--iptables=false --log-opt max-size=100m --log-opt max-file=1 --default-ulimit=nofile=32768:32768 --default-ulimit=nproc=16384:16384"
 
 write_files:
-#
 - path: /etc/sysctl.d/10-disable-ipv6.conf
   permissions: 0644
   owner: root
@@ -133,9 +94,3 @@ write_files:
     AWS_REGION=${region}
     DNS_ZONE_NAME=${zonename}
     ENVIRONMENT=${environment}
-- path: /etc/profile.env
-  content: |
-    export ETCDCTL_ENDPOINT=https://127.0.0.1:2379
-    export ETCDCTL_CA_FILE=/etc/ssl/kubernetes/ca.pem
-    export ETCDCTL_CERT_FILE=/etc/ssl/kubernetes/etcd.pem
-    export ETCDCTL_KEY_FILE=/etc/ssl/kubernetes/etcdkey.pem

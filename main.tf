@@ -5,20 +5,23 @@ provider "aws" {
 
 #1
 module "tls" {
-  source        = "./modules/tls"
-  internal-tld  = "${var.internal-tld}"
-  k8s-serviceip = "${var.k8s-serviceip}"
-  adminregion   = "${var.adminregion}"
-  capem         = "${var.capem}"
-  cakey         = "${var.cakey}"
-  etcdpem       = "${var.etcdpem}"
-  etcdkey       = "${var.etcdkey}"
-  masterpem     = "${var.masterpem}"
-  masterkey     = "${var.masterkey}"
-  kubenodepem   = "${var.kubenodepem}"
-  kubenodekey   = "${var.kubenodekey}"
-  adminpem      = "${var.adminpem}"
-  adminkey      = "${var.adminkey}"
+  source         = "./modules/tls"
+  internal-tld   = "${var.internal-tld}"
+  k8s-serviceip  = "${var.k8s-serviceip}"
+  adminregion    = "${var.adminregion}"
+  capem          = "${var.capem}"
+  cakey          = "${var.cakey}"
+  etcdpem        = "${var.etcdpem}"
+  etcdkey        = "${var.etcdkey}"
+  masterpem      = "${var.masterpem}"
+  masterkey      = "${var.masterkey}"
+  kubenodepem    = "${var.kubenodepem}"
+  kubenodekey    = "${var.kubenodekey}"
+  adminpem       = "${var.adminpem}"
+  adminkey       = "${var.adminkey}"
+  etcd_nodes_az1 = "${var.etcd_nodes_az1}"
+  etcd_nodes_az2 = "${var.etcd_nodes_az2}"
+  etcd_nodes_az3 = "${var.etcd_nodes_az3}"
 }
 
 #2
