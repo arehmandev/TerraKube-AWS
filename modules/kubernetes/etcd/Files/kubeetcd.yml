@@ -26,7 +26,7 @@ coreos:
     enable: true
     content: |
       [Unit]
-      Description=Smilodon - manage ebs+eni attachment
+      Description=Etcd-environment - manage Etcd env dynamic variables
       After=smilodon.service
       Requires=smilodon.service
       [Service]
