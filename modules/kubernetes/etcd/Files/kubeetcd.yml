@@ -17,6 +17,8 @@ coreos:
         PermissionsStartOnly=true
         RuntimeDirectory=etcd2
         RuntimeDirectoryMode=0700
+        ExecStart=
+        ExecStart=/usr/bin/bash /etc/etcdstrap.sh
         Restart=on-failure
         RestartSec=10
   - name: systemd-sysctl.service
