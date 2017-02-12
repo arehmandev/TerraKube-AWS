@@ -18,6 +18,8 @@ NODE_IP=10.0.1.10
           --peer-trusted-ca-file /etc/ssl/kubernetes/ca.pem \
           --peer-cert-file /etc/ssl/kubernetes/etcd.pem \
           --peer-key-file /etc/ssl/kubernetes/etcdkey.pem \
-          --initial-cluster-state new
+          --initial-cluster-state new \
+          --proxy on
+
 
 etcdctl --endpoint https://127.0.0.1:2379 --cert-file /etc/ssl/kubernetes/etcd.pem --key-file /etc/ssl/kubernetes/etcdkey.pem --ca-file /etc/ssl/kubernetes/ca.pem cluster-health

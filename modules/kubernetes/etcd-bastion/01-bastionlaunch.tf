@@ -2,8 +2,14 @@ data "template_file" "kubebastion" {
   template = "${file("${path.module}/${var.userdata}")}"
 
   vars {
-    etcd_memberlist = "${join(",", concat(formatlist("%s=https://%s:2380", keys(var.etcd_nodes_az1), values(var.etcd_nodes_az1)), formatlist("%s=https://%s:2380", keys(var.etcd_nodes_az2), values(var.etcd_nodes_az2)), formatlist("%s=https://%s:2380", keys(var.etcd_nodes_az3), values(var.etcd_nodes_az3)) ))}"
     region          = "${var.adminregion}"
+    internal-tld    = "${ var.internal-tld }"
+    region          = "${ var.adminregion }"
+    bucket          = "${ var.bucketname }"
+    cacertobject    = "${var.capem}"
+    etcdcertobject  = "${var.etcdpem}"
+    etcdkeyobject   = "${var.etcdkey}"
+    etcd_memberlist = "${join(",", concat(formatlist("%s=https://%s:2380", keys(var.etcd_nodes_az1), values(var.etcd_nodes_az1)), formatlist("%s=https://%s:2380", keys(var.etcd_nodes_az2), values(var.etcd_nodes_az2)), formatlist("%s=https://%s:2380", keys(var.etcd_nodes_az3), values(var.etcd_nodes_az3)) ))}"
   }
 }
 

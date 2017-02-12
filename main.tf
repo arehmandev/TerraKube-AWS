@@ -148,6 +148,12 @@ module "etcdbastion" {
 
   #Template variables
   adminregion    = "${var.adminregion}"
+  internal-tld   = "${var.internal-tld}"
+  adminregion    = "${var.adminregion}"
+  bucketname     = "${var.bucketname}"
+  capem          = "${var.capem}"
+  etcdpem        = "${var.etcdpem}"
+  etcdkey        = "${var.etcdkey}"
   etcd_nodes_az1 = "${var.etcd_nodes_az1}"
   etcd_nodes_az2 = "${var.etcd_nodes_az2}"
   etcd_nodes_az3 = "${var.etcd_nodes_az3}"

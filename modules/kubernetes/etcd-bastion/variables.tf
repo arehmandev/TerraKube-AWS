@@ -1,6 +1,18 @@
 ### Module etcd
 
 # template variables
+
+# template variables
+variable "internal-tld" {}
+
+variable "bucketname" {}
+
+variable "capem" {}
+
+variable "etcdpem" {}
+
+variable "etcdkey" {}
+
 variable "adminregion" {}
 
 variable "lc_name" {}
