@@ -12,6 +12,12 @@ resource "tls_cert_request" "kubeadmin" {
     "kubernetes.default.svc",
     "kubernetes.default.svc.cluster.local",
     "*.*.compute.internal,*.ec2.internal",
+    "localhost",
+  ]
+
+  ip_addresses = [
+    "0.0.0.0",
+    "127.0.0.1",
   ]
 
   subject {

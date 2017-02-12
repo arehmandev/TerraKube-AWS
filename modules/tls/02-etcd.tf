@@ -7,6 +7,7 @@ resource "tls_cert_request" "etcd" {
   private_key_pem = "${tls_private_key.etcd.private_key_pem}"
 
   dns_names = [
+    "localhost",
     "kubernetes",
     "kubernetes.default",
     "kubernetes.default.svc",

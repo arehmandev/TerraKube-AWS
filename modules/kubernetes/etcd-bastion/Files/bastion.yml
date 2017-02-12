@@ -10,12 +10,12 @@ coreos:
       content: |
         [Unit]
         Description=Etcd2 - unit for etcd
-        After=kmsctl-certs.service
-        Requires=kmsctl-certs.service
+        Wants=kmsctl-certs.service
         [Service]
         PermissionsStartOnly=true
         RuntimeDirectory=etcd2
         RuntimeDirectoryMode=0700
+        ExecStartPre=/usr/bin/systemctl --quiet is-active kmsctl-certs.service
         EnvironmentFile=/etc/etcd-environment
         Restart=on-failure
         RestartSec=10
@@ -26,6 +26,9 @@ coreos:
       [Unit]
       Description=KMSCtl - download certs
       [Service]
+      Type=notify
+      NotifyAccess=all
+      RemainAfterExit=yes
       ExecStartPre=/usr/bin/mkdir -p /opt/bin
       ExecStartPre=/usr/bin/mkdir -p /var/lib/etcd2
       ExecStartPre=/usr/bin/mkdir -p /etc/ssl/kubernetes
@@ -36,15 +39,17 @@ coreos:
       ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ ${etcdcertobject}
       ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ ${etcdkeyobject}
       ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ ${cacertobject}
-      ExecStartPre=/usr/bin/chmod 0644 /etc/ssl/kubernetes/${etcdcertobject} /etc/ssl/kubernetes/${etcdkeyobject} /etc/ssl/kubernetes/${cacertobject}
+      ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ admin.pem
+      ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ adminkey.pem
+      ExecStartPre=/usr/bin/echo "Completed Cert downloads"
       ExecStartPre=/usr/bin/bash -c "cp -f /etc/ssl/kubernetes/* /etc/ssl/certs"
-      ExecStartPre=/usr/sbin/update-ca-certificates
+      ExecStartPre=/usr/bin/bash -c "chmod 0644 /etc/ssl/kubernetes/*"
       ExecStartPre=/usr/bin/chown -R etcd:etcd /etc/ssl/kubernetes /var/lib/etcd2
-      ExecStart=/usr/bin/echo "Completed Cert downloads"
-      Restart=always
+      ExecStartPre=/usr/sbin/update-ca-certificates
+      ExecStart=/usr/bin/systemd-notify --ready --status="successfully downloaded the certs"
+      Restart=on-failure
       RestartSec=10
       TimeoutStartSec=300
-
 write_files:
 - path: /etc/profile.env
   content: |
@@ -57,8 +62,8 @@ write_files:
   permissions: 0644
   content: |
     ETCD_TRUSTED_CA_FILE=/etc/ssl/kubernetes/ca.pem
-    ETCD_CERT_FILE=/etc/ssl/kubernetes/etcd.pem
-    ETCD_KEY_FILE=/etc/ssl/kubernetes/etcdkey.pem
+    ETCD_CERT_FILE=/etc/ssl/kubernetes/admin.pem
+    ETCD_KEY_FILE=/etc/ssl/kubernetes/adminkey.pem
     ETCD_PEER_TRUSTED_CA_FILE=/etc/ssl/kubernetes/ca.pem
     ETCD_PEER_CERT_FILE=/etc/ssl/kubernetes/etcd.pem
     ETCD_PEER_KEY_FILE=/etc/ssl/kubernetes/etcdkey.pem

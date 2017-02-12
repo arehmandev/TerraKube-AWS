@@ -12,17 +12,15 @@ coreos:
       content: |
         [Unit]
         Description=Etcd2 - unit for etcd
-        After=smilodon.service
         Requires=smilodon.service
+        After=smilodon.service
         [Service]
-        KillMode=none
-        SendSIGKILL=no
         PermissionsStartOnly=true
         RuntimeDirectory=etcd2
         RuntimeDirectoryMode=0700
         EnvironmentFile=/etc/etcd-environment
         EnvironmentFile=/run/smilodon/environment
-        ExecStartPre=/usr/bin/cat /run/smilodon/environment
+        ExecStartPre=/usr/bin/systemctl --quiet is-active kmsctl-certs.service
         ExecStart=
         ExecStart=-/usr/bin/etcd2 --name=node$${NODE_ID} \
         --initial-advertise-peer-urls https://$${NODE_IP}:2380 \
@@ -35,13 +33,12 @@ coreos:
     content: |
       [Unit]
       Description=Smilodon - manage ebs+eni attachment
-      After=kmsctl-certs.service
-      Requires=kmsctl-certs.service
       [Service]
       Environment="URL=${smilodon_release_url}"
       Environment="OUTPUT_FILE=/opt/bin/smilodon"
       Environment="MD5SUM=${smilodon_release_md5}"
       EnvironmentFile=/etc/aws-environment
+      ExecStartPre=/usr/bin/systemctl --quiet is-active kmsctl-certs.service
       ExecStartPre=/usr/bin/mkdir -p /opt/bin
       ExecStartPre=/usr/bin/bash -c 'until [[ -x $${OUTPUT_FILE} ]] && [[ $(md5sum $${OUTPUT_FILE} | cut -f1 -d" ") == $${MD5SUM} ]]; do wget -q -O $${OUTPUT_FILE} $${URL} && chmod +x $${OUTPUT_FILE}; done'
       ExecStart=/opt/bin/smilodon --filters=tag:Env=${environment}
@@ -54,6 +51,9 @@ coreos:
       [Unit]
       Description=KMSCtl - download certs
       [Service]
+      Type=notify
+      NotifyAccess=all
+      RemainAfterExit=yes
       ExecStartPre=/usr/bin/mkdir -p /opt/bin
       ExecStartPre=/usr/bin/mkdir -p /var/lib/etcd2
       ExecStartPre=/usr/bin/mkdir -p /etc/ssl/kubernetes
@@ -66,10 +66,10 @@ coreos:
       ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ ${cacertobject}
       ExecStartPre=/usr/bin/chmod 0644 /etc/ssl/kubernetes/${etcdcertobject} /etc/ssl/kubernetes/${etcdkeyobject} /etc/ssl/kubernetes/${cacertobject}
       ExecStartPre=/usr/bin/bash -c "cp -f /etc/ssl/kubernetes/* /etc/ssl/certs"
-      ExecStartPre=/usr/sbin/update-ca-certificates
       ExecStartPre=/usr/bin/chown -R etcd:etcd /etc/ssl/kubernetes /var/lib/etcd2
-      ExecStart=/usr/bin/echo "Completed Cert downloads"
-      Restart=always
+      ExecStartPre=/usr/sbin/update-ca-certificates
+      ExecStart=/usr/bin/systemd-notify --ready --status="successfully downloaded the certs"
+      Restart=on-failure
       RestartSec=10
       TimeoutStartSec=300
 # Workaround until this has been fixed: https://github.com/systemd/systemd/issues/1784
