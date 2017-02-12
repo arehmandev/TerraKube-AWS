@@ -12,8 +12,7 @@ coreos:
       content: |
         [Unit]
         Description=Etcd2 - unit for etcd
-        Requires=smilodon.service
-        After=smilodon.service
+        Wants=smilodon.service
         [Service]
         PermissionsStartOnly=true
         RuntimeDirectory=etcd2
