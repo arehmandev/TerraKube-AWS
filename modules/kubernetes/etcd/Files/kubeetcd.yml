@@ -25,6 +25,7 @@ coreos:
         RuntimeDirectoryMode=0700
         EnvironmentFile=/etc/etcd-environment
         EnvironmentFile=/run/smilodon/environment
+        ExecStartPre=/usr/bin/chown -R etcd:etcd /etc/ssl/kubernetes /var/lib/etcd2
         ExecStartPre=/usr/bin/systemctl --quiet is-active kmsctl-certs.service
         ExecStart=
         ExecStart=-/usr/bin/etcd2 --name=node$${NODE_ID} \
@@ -71,7 +72,6 @@ coreos:
       ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ ${cacertobject}
       ExecStartPre=/usr/bin/chmod 0644 /etc/ssl/kubernetes/${etcdcertobject} /etc/ssl/kubernetes/${etcdkeyobject} /etc/ssl/kubernetes/${cacertobject}
       ExecStartPre=/usr/bin/bash -c "cp -f /etc/ssl/kubernetes/* /etc/ssl/certs"
-      ExecStartPre=/usr/bin/chown -R etcd:etcd /etc/ssl/kubernetes /var/lib/etcd2
       ExecStartPre=/usr/sbin/update-ca-certificates
       ExecStart=/usr/bin/systemd-notify --ready --status="successfully downloaded the certs"
       Restart=on-failure
@@ -124,6 +124,7 @@ coreos:
       Description=Mount etcd2 data volume
       Before=etcd2.service
       After=xvde-mkfs.service
+      Requires=xvde-mkfs.service
       [Mount]
       What=/dev/xvde
       Where=/var/lib/etcd2
