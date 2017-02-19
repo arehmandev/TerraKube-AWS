@@ -39,8 +39,8 @@ coreos:
       ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ ${etcdcertobject}
       ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ ${etcdkeyobject}
       ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ ${cacertobject}
-      ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ admin.pem
-      ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ adminkey.pem
+      ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ ${etcdproxycertobject}
+      ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ ${etcdproxykeyobject}
       ExecStartPre=/usr/bin/echo "Completed Cert downloads"
       ExecStartPre=/usr/bin/bash -c "cp -f /etc/ssl/kubernetes/* /etc/ssl/certs"
       ExecStartPre=/usr/bin/bash -c "chmod 0644 /etc/ssl/kubernetes/*"
@@ -62,8 +62,8 @@ write_files:
   permissions: 0644
   content: |
     ETCD_TRUSTED_CA_FILE=/etc/ssl/kubernetes/${cacertobject}
-    ETCD_CERT_FILE=/etc/ssl/kubernetes/admin.pem
-    ETCD_KEY_FILE=/etc/ssl/kubernetes/adminkey.pem
+    ETCD_CERT_FILE=/etc/ssl/kubernetes/${etcdproxycertobject}
+    ETCD_KEY_FILE=/etc/ssl/kubernetes/${etcdproxykeyobject}
     ETCD_PEER_TRUSTED_CA_FILE=/etc/ssl/kubernetes/${cacertobject}
     ETCD_PEER_CERT_FILE=/etc/ssl/kubernetes/${etcdcertobject}
     ETCD_PEER_KEY_FILE=/etc/ssl/kubernetes/${etcdkeyobject}
