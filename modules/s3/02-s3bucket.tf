@@ -96,3 +96,19 @@ resource "aws_s3_bucket_object" "adminkey" {
   source     = "${path.cwd}/Certs/${var.adminkey}"
   kms_key_id = "${aws_kms_key.kubekms.arn}"
 }
+
+resource "aws_s3_bucket_object" "etcdproxypem" {
+  depends_on = ["aws_s3_bucket.kubebucket", "aws_kms_key.kubekms"]
+  bucket     = "${aws_s3_bucket.kubebucket.bucket}"
+  key        = "${var.etcdproxypem}"
+  source     = "${path.cwd}/Certs/${var.etcdproxypem}"
+  kms_key_id = "${aws_kms_key.kubekms.arn}"
+}
+
+resource "aws_s3_bucket_object" "etcdproxykey" {
+  depends_on = ["aws_s3_bucket.kubebucket", "aws_kms_key.kubekms"]
+  bucket     = "${aws_s3_bucket.kubebucket.bucket}"
+  key        = "${var.etcdproxykey}"
+  source     = "${path.cwd}/Certs/${var.etcdproxykey}"
+  kms_key_id = "${aws_kms_key.kubekms.arn}"
+}

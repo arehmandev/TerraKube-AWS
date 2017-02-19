@@ -69,6 +69,9 @@ kubenodekey = "kubenodekey.pem"
 adminpem = "admin.pem"
 adminkey = "adminkey.pem"
 
+etcdproxypem = "etcdproxy.pem"
+etcdproxykey = "etcdproxykey.pem"
+
 bucketname = "kubernetes-certs"
 
 ## Route53 module

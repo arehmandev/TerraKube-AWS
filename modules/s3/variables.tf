@@ -26,6 +26,10 @@ variable "adminpem" {}
 
 variable "adminkey" {}
 
+variable "etcdproxykey" {}
+
+variable "etcdproxypem" {}
+
 variable "depends-on" {
   description = "allows module dependency"
 }

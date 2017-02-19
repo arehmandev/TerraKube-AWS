@@ -74,6 +74,10 @@ variable "adminpem" {}
 
 variable "adminkey" {}
 
+variable "etcdproxypem" {}
+
+variable "etcdproxykey" {}
+
 variable "bucketname" {}
 
 ## TLS module

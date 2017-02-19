@@ -13,6 +13,10 @@ variable "etcdpem" {}
 
 variable "etcdkey" {}
 
+variable "etcdproxykey" {}
+
+variable "etcdproxypem" {}
+
 variable "adminregion" {}
 
 variable "lc_name" {}

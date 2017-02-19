@@ -1,6 +1,12 @@
 #cloud-config
 
 coreos:
+  flannel:
+    interface: $private_ipv4
+    etcd_endpoints: "https://127.0.0.1:2379"
+    etcd_certfile: /etc/ssl/kubernetes/${etcdcertobject}
+    etcd_keyfile: /etc/ssl/kubernetes/${etcdkeyobject}
+    etcd_cafile: /etc/ssl/kubernetes/${cacertobject}
   units:
   - name: systemd-sysctl.service
     command: restart
@@ -100,6 +106,37 @@ coreos:
       content: |
         [Service]
         Environment="DOCKER_OPTS=--iptables=false --log-opt max-size=100m --log-opt max-file=1 --default-ulimit=nofile=32768:32768 --default-ulimit=nproc=16384:16384"
+  - name: fleet.service
+    command: stop
+    enable: false
+  - name: xvde-mkfs.service
+    content: |
+      [Unit]
+      Description=Format /dev/xvde
+      After=dev-xvde.device
+      Requires=dev-xvde.device
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/bin/bash -c '/usr/bin/lsblk -n -o FSTYPE /dev/xvde | grep ext4 || (/usr/sbin/wipefs -f /dev/xvde && /usr/sbin/mkfs.ext4 /dev/xvde)'
+  - name: var-lib-etcd2.mount
+    content: |
+      [Unit]
+      Description=Mount etcd2 data volume
+      Before=etcd2.service
+      After=xvde-mkfs.service
+      [Mount]
+      What=/dev/xvde
+      Where=/var/lib/etcd2
+      Type=ext4
+  - name: var-lib-etcd2.automount
+    command: start
+    enable: true
+    content: |
+      [Unit]
+      Description=Auto mount etcd2 data volume
+      [Automount]
+      Where=/var/lib/etcd2
+
 write_files:
 - path: /etc/sysctl.d/10-disable-ipv6.conf
   permissions: 0644
@@ -123,20 +160,20 @@ write_files:
 - path: /etc/profile.env
   content: |
     export ETCDCTL_ENDPOINT=https://127.0.0.1:2379
-    export ETCDCTL_CA_FILE=/etc/ssl/kubernetes/ca.pem
-    export ETCDCTL_CERT_FILE=/etc/ssl/kubernetes/etcd.pem
-    export ETCDCTL_KEY_FILE=/etc/ssl/kubernetes/etcdkey.pem
+    export ETCDCTL_CA_FILE=/etc/ssl/kubernetes/${cacertobject}
+    export ETCDCTL_CERT_FILE=/etc/ssl/kubernetes/${etcdcertobject}
+    export ETCDCTL_KEY_FILE=/etc/ssl/kubernetes/${etcdkeyobject}
     source /run/smilodon/environment
     source /etc/etcd-environment
 - path: /etc/etcd-environment
   permissions: 0644
   content: |
-    ETCD_TRUSTED_CA_FILE=/etc/ssl/kubernetes/ca.pem
-    ETCD_CERT_FILE=/etc/ssl/kubernetes/etcd.pem
-    ETCD_KEY_FILE=/etc/ssl/kubernetes/etcdkey.pem
-    ETCD_PEER_TRUSTED_CA_FILE=/etc/ssl/kubernetes/ca.pem
-    ETCD_PEER_CERT_FILE=/etc/ssl/kubernetes/etcd.pem
-    ETCD_PEER_KEY_FILE=/etc/ssl/kubernetes/etcdkey.pem
+    ETCD_TRUSTED_CA_FILE=/etc/ssl/kubernetes/${cacertobject}
+    ETCD_CERT_FILE=/etc/ssl/kubernetes/${etcdcertobject}
+    ETCD_KEY_FILE=/etc/ssl/kubernetes/${etcdkeyobject}
+    ETCD_PEER_TRUSTED_CA_FILE=/etc/ssl/kubernetes/${cacertobject}
+    ETCD_PEER_CERT_FILE=/etc/ssl/kubernetes/${etcdcertobject}
+    ETCD_PEER_KEY_FILE=/etc/ssl/kubernetes/${etcdkeyobject}
     ETCD_LISTEN_PEER_URLS=https://0.0.0.0:2380
     ETCD_LISTEN_CLIENT_URLS=https://0.0.0.0:2379
     ETCD_CLIENT_CERT_AUTH=true

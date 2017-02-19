@@ -46,6 +46,10 @@ variable "adminpem" {}
 
 variable "adminkey" {}
 
+variable "etcdproxykey" {}
+
+variable "etcdproxypem" {}
+
 variable "etcd_nodes_az1" {
   type = "map"
 }
