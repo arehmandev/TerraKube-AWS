@@ -166,63 +166,50 @@ coreos:
         ExecStartPre=/usr/bin/systemctl --quiet is-active etcd2.service
         ExecStartPre=/usr/bin/systemctl --quiet is-active kmsctl-certs.service
         ExecStartPre=/usr/bin/etcdctl --peers $${FLANNELD_ETCD_ENDPOINTS} set /coreos.com/network/config '{"Network":"${flannel_cidr}","Backend":{"Type":"vxlan"}}'
+
   - name: kubelet.service
     command: start
     content: |
       [Unit]
-      Description=Kubernetes Kubelet
-      Documentation=https://github.com/GoogleCloudPlatform/kubernetes
-
+      ConditionFileIsExecutable=/usr/lib/coreos/kubelet-wrapper
       [Service]
-      Restart=always
-      RestartSec=10
-      RuntimeDirectory=kubelet
-      RuntimeDirectoryMode=0700
-      Environment=KUBELET_IMAGE_TAG=${kubernetes_version}
-      Environment=KUBELET_IMAGE_URL=${kubernetes_image}
-      EnvironmentFile=/etc/environment
-      Environment="RKT_RUN_ARGS=--uuid-file-save=/var/run/kubelet-pod.uuid \
+      Environment="KUBELET_ACI=${kubernetes_image}"
+      Environment="KUBELET_VERSION=${kubernetes_version}"
+      Environment="RKT_OPTS=\
         --volume dns,kind=host,source=/etc/resolv.conf \
         --mount volume=dns,target=/etc/resolv.conf \
-        --volume=etc-ssl-certs,kind=host,source=/etc/ssl/kubernetes \
-        --mount volume=etc-ssl-certs,target=/etc/ssl/certs \
+        --volume rkt,kind=host,source=/opt/bin/host-rkt \
+        --mount volume=rkt,target=/usr/bin/rkt \
         --volume var-lib-rkt,kind=host,source=/var/lib/rkt \
         --mount volume=var-lib-rkt,target=/var/lib/rkt \
         --volume stage,kind=host,source=/tmp \
         --mount volume=stage,target=/tmp \
         --volume var-log,kind=host,source=/var/log \
-        --mount volume=var-log,target=/var/log \
-        --volume cni-bin,kind=host,source=/opt/cni/bin \
-        --mount volume=cni-bin,target=/opt/cni/bin"
-
-      ExecStartPre=/usr/sbin/modprobe br_netfilter
-      ExecStartPre=/usr/bin/systemctl --quiet is-active etcd2.service
-      ExecStartPre=/usr/bin/systemctl --quiet is-active flanneld.service
-      ExecStartPre=/bin/mkdir -p /etc/kubernetes/manifests /opt/cni/bin
+        --mount volume=var-log,target=/var/log"
+      ExecStartPre=/usr/bin/mkdir -p /var/log/containers
+      ExecStartPre=/usr/bin/mkdir -p /var/lib/kubelet
+      ExecStartPre=/usr/bin/mount --bind /var/lib/kubelet /var/lib/kubelet
+      ExecStartPre=/usr/bin/mount --make-shared /var/lib/kubelet
       ExecStart=/usr/lib/coreos/kubelet-wrapper \
-        --address=0.0.0.0 \
         --allow-privileged=true \
         --api-servers=http://127.0.0.1:8080 \
-        --cloud-config=/etc/kubernetes/cloud.cfg \
         --cloud-provider=aws \
-        --cluster-dns=10.200.0.10 \
+        --cluster-dns=10.3.0.10 \
         --cluster-domain=cluster.local \
-        --cpu-cfs-quota=true \
-        --host-network-sources=* \
-        --hostname-override=$private_ipv4 \
-        --image-gc-high-threshold=60 \
-        --image-gc-low-threshold=40 \
-        --logtostderr=true \
-        --maximum-dead-containers-per-container=1 \
-        --maximum-dead-containers=10 \
-        --node-labels="role=master" \
-        --pod-manifest-path=/etc/kubernetes/manifests \
-        --register-schedulable=false \
-        --system-reserved=cpu=50m,memory=100Mi
-
-      ExecStop=-/usr/bin/rkt stop --uuid-file=/var/run/kubelet-pod.uuid
+        --config=/etc/kubernetes/manifests \
+        --register-schedulable=false
+      Restart=always
+      RestartSec=5
+      [Install]
+      WantedBy=multi-user.target
 
 write_files:
+- path: /opt/bin/host-rkt
+  permissions: 0755
+  owner: root:root
+  content: |
+    #!/bin/sh
+    exec nsenter -m -u -i -n -p -t 1 -- /usr/bin/rkt "$@"
 - path: /etc/kubernetes/cni/docker_opts_cni.env
   permissions: 0444
   owner: root

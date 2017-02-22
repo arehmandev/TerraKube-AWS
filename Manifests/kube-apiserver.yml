@@ -11,15 +11,19 @@ spec:
     command:
     - /hyperkube
     - apiserver
-    - --admission-control=AlwaysPullImages,NamespaceLifecycle,LimitRanger,ResourceQuota,ServiceAccount
+    - --admission-control=NamespaceLifecycle,NamespaceExists,LimitRanger,ResourceQuota,ServiceAccount,SecurityContextDeny
     - --allow-privileged=true
     - --bind-address=0.0.0.0
     - --etcd-servers=${etcd_memberlist}
-    - --service-cluster-ip-range=${serviceiprange}
     - --secure-port=443
-    - --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota
     - --tls-cert-file=/etc/ssl/kubernetes/${mastercertobject}
     - --tls-private-key-file=/etc/ssl/kubernetes/${masterkeyobject}
+    - --service-cluster-ip-range=${serviceiprange}
+    - --insecure-port=8080
+    - --cloud-provider=aws
+    - --enable-swagger-ui=true
+    - --cloud-config=/etc/kubernetes/cloud.cfg
+    - --apiserver-count=${apiservercount}
     - --client-ca-file=/etc/ssl/kubernetes/${cacertobject}
     - --service-account-key-file=/etc/ssl/kubernetes/${masterkeyobject}
     - --runtime-config=extensions/v1beta1/networkpolicies=true
@@ -39,10 +43,15 @@ spec:
       hostPort: 8080
       name: local
     volumeMounts:
-    - mountPath: /etc/ssl/kubernetes
-      name: ssl-certs-kubernetes
+    - name: ssl-certs-kubernetes
+      mountPath: /etc/ssl/kubernetes
       readOnly: true
+    - name: kubernetes
+      mountPath: /etc/kubernetes
   volumes:
-  - hostPath:
+  - name: ssl-certs-kubernetes
+    hostPath:
       path: /etc/ssl/kubernetes
-    name: ssl-certs-kubernetes
+  - name: kubernetes
+    hostPath:
+      path: /etc/kubernetes

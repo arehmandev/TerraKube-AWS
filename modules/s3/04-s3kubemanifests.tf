@@ -39,6 +39,7 @@ data "template_file" "kube-apiserver" {
     mastercertobject = "${var.masterpem}"
     masterkeyobject  = "${var.masterkey}"
     cacertobject     = "${var.capem}"
+    apiservercount   = "${var.etcd_asg_maxsize_az1 + var.etcd_asg_maxsize_az2 + var.etcd_asg_maxsize_az3 }"
   }
 }
 

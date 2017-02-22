@@ -47,3 +47,18 @@ variable "etcd_nodes_az2" {
 variable "etcd_nodes_az3" {
   type = "map"
 }
+
+variable "etcd_asg_maxsize_az1" {
+  description = "The minimum number of instances the ASG should maintain"
+  default     = 1
+}
+
+variable "etcd_asg_maxsize_az2" {
+  description = "The minimum number of instances the ASG should maintain"
+  default     = 1
+}
+
+variable "etcd_asg_maxsize_az3" {
+  description = "The minimum number of instances the ASG should maintain"
+  default     = 1
+}
