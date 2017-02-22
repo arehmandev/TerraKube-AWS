@@ -67,8 +67,8 @@ coreos:
       ExecStartPre=/usr/bin/mkdir -p /var/lib/etcd2
       ExecStartPre=/usr/bin/mkdir -p /etc/ssl/kubernetes
       ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
-      ExecStartPre=/usr/bin/chown -R etcd:etcd /etc/ssl/kubernetes /var/lib/etcd2
-      ExecStartPre=/usr/bin/chown -R root:root /etc/kubernetes/manifests
+      ExecStartPre=/usr/bin/chown -R etcd:etcd /var/lib/etcd2
+      ExecStartPre=/usr/bin/chown -R root:root /etc/kubernetes/manifests /etc/ssl/kubernetes
       ExecStartPre=/usr/bin/chmod 0744 /etc/ssl/kubernetes /var/lib/etcd2
       ExecStartPre=/usr/bin/wget https://github.com/gambol99/kmsctl/releases/download/v1.0.4/kmsctl-linux-amd64 -O /opt/bin/kmsctl
       ExecStartPre=/usr/bin/chmod +x /opt/bin/kmsctl
@@ -117,14 +117,12 @@ coreos:
     drop-ins:
     - name: 10-opts.conf
       content: |
-        [Service]
+        [Unit]
         Requires=flanneld.service
         After=flanneld.service
+        [Service]
         EnvironmentFile=/etc/kubernetes/cni/docker_opts_cni.env
         Environment="DOCKER_OPTS=--iptables=false --log-opt max-size=100m --log-opt max-file=1 --default-ulimit=nofile=32768:32768 --default-ulimit=nproc=16384:16384"
-  - name: fleet.service
-    command: stop
-    enable: false
   - name: xvde-mkfs.service
     content: |
       [Unit]
@@ -162,8 +160,9 @@ coreos:
         [Service]
         RestartSec=30
         Restart=on-failure
-        EnvironmentFile=/run/smilodon/environment
-        EnvironmentFile="/run/flannel/options.env"
+        Environment="ETCD_SSL_DIR=/etc/ssl/kubernetes"
+        EnvironmentFile=/etc/etcd-environment
+        EnvironmentFile=/run/flannel/options.env
         ExecStartPre=/usr/bin/systemctl --quiet is-active etcd2.service
         ExecStartPre=/usr/bin/systemctl --quiet is-active kmsctl-certs.service
         ExecStartPre=/usr/bin/etcdctl --peers $${FLANNELD_ETCD_ENDPOINTS} set /coreos.com/network/config '{"Network":"${flannel_cidr}","Backend":{"Type":"vxlan"}}'
@@ -185,7 +184,7 @@ coreos:
       Environment="RKT_RUN_ARGS=--uuid-file-save=/var/run/kubelet-pod.uuid \
         --volume dns,kind=host,source=/etc/resolv.conf \
         --mount volume=dns,target=/etc/resolv.conf \
-        --volume=etc-ssl-certs,kind=host,source=/etc/ssl/certs \
+        --volume=etc-ssl-certs,kind=host,source=/etc/ssl/kubernetes \
         --mount volume=etc-ssl-certs,target=/etc/ssl/certs \
         --volume var-lib-rkt,kind=host,source=/var/lib/rkt \
         --mount volume=var-lib-rkt,target=/var/lib/rkt \
@@ -292,3 +291,7 @@ write_files:
     ETCD_INITIAL_CLUSTER_STATE=new
     ETCD_INITIAL_CLUSTER_TOKEN=etcd-terrakube
     ETCD_INITIAL_CLUSTER=${etcd_memberlist}
+    ETCDCTL_ENDPOINT=https://127.0.0.1:2379
+    ETCDCTL_CA_FILE=/etc/ssl/kubernetes/${cacertobject}
+    ETCDCTL_CERT_FILE=/etc/ssl/kubernetes/${etcdcertobject}
+    ETCDCTL_KEY_FILE=/etc/ssl/kubernetes/${etcdkeyobject}

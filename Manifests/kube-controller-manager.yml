@@ -13,8 +13,8 @@ spec:
     - controller-manager
     - --master=http://127.0.0.1:8080
     - --leader-elect=true
-    - --service-account-private-key-file=/etc/kubernetes/ssl/${masterkeyobject}
-    - --root-ca-file=/etc/kubernetes/ssl/${cacertobject}
+    - --service-account-private-key-file=/etc/ssl/kubernetes/${masterkeyobject}
+    - --root-ca-file=/etc/ssl/kubernetes/${cacertobject}
     resources:
       requests:
         cpu: 200m
@@ -26,7 +26,7 @@ spec:
       initialDelaySeconds: 15
       timeoutSeconds: 15
     volumeMounts:
-    - mountPath: /etc/kubernetes/ssl
+    - mountPath: /etc/ssl/kubernetes
       name: ssl-certs-kubernetes
       readOnly: true
   volumes:
