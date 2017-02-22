@@ -93,6 +93,11 @@ module "s3" {
   adminkey     = "${var.adminkey}"
   etcdproxypem = "${var.etcdproxypem}"
   etcdproxykey = "${var.etcdproxykey}"
+
+  service-cluster-ip-range = "${var.service-cluster-ip-range}"
+  etcd_nodes_az1           = "${var.etcd_nodes_az1}"
+  etcd_nodes_az2           = "${var.etcd_nodes_az2}"
+  etcd_nodes_az3           = "${var.etcd_nodes_az3}"
 }
 
 module "etcd" {
@@ -106,8 +111,8 @@ module "etcd" {
   capem                    = "${var.capem}"
   etcdpem                  = "${var.etcdpem}"
   etcdkey                  = "${var.etcdkey}"
-  masterpem    = "${var.masterpem}"
-  masterkey    = "${var.masterkey}"
+  masterpem                = "${var.masterpem}"
+  masterkey                = "${var.masterkey}"
   zonename                 = "${module.route53.internal-zone-id}"
   service-cluster-ip-range = "${var.service-cluster-ip-range}"
 

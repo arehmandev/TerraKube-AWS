@@ -33,3 +33,17 @@ variable "etcdproxypem" {}
 variable "depends-on" {
   description = "allows module dependency"
 }
+
+variable "service-cluster-ip-range" {}
+
+variable "etcd_nodes_az1" {
+  type = "map"
+}
+
+variable "etcd_nodes_az2" {
+  type = "map"
+}
+
+variable "etcd_nodes_az3" {
+  type = "map"
+}

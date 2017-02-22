@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kube-apiserver
+  namespace: kube-system
+spec:
+  hostNetwork: true
+  containers:
+  - name: kube-apiserver
+    image: quay.io/coreos/hyperkube:v1.5.2_coreos.0
+    command:
+    - /hyperkube
+    - apiserver
+    - --admission-control=AlwaysPullImages,NamespaceLifecycle,LimitRanger,ResourceQuota,ServiceAccount
+    - --allow-privileged=true
+    - --bind-address=0.0.0.0
+    - --etcd-servers=${etcd_memberlist}
+    - --service-cluster-ip-range=${serviceiprange}
+    - --secure-port=443
+    - --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota
+    - --tls-cert-file=/etc/kubernetes/ssl/${mastercertobject}
+    - --tls-private-key-file=/etc/kubernetes/ssl/${masterkeyobject}
+    - --client-ca-file=/etc/kubernetes/ssl/${cacertobject}
+    - --service-account-key-file=/etc/kubernetes/ssl/${masterkeyobject}
+    - --runtime-config=extensions/v1beta1/networkpolicies=true
+    - --anonymous-auth=false
+    livenessProbe:
+      httpGet:
+        host: 127.0.0.1
+        port: 8080
+        path: /healthz
+      initialDelaySeconds: 15
+      timeoutSeconds: 15
+    ports:
+    - containerPort: 443
+      hostPort: 443
+      name: https
+    - containerPort: 8080
+      hostPort: 8080
+      name: local
+    volumeMounts:
+    - mountPath: /etc/kubernetes/ssl
+      name: ssl-certs-kubernetes
+      readOnly: true
+  volumes:
+  - hostPath:
+      path: /etc/ssl/kubernetes
+    name: ssl-certs-kubernetes
