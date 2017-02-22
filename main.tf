@@ -113,6 +113,8 @@ module "etcd" {
   etcdkey                  = "${var.etcdkey}"
   masterpem                = "${var.masterpem}"
   masterkey                = "${var.masterkey}"
+  etcdproxypem             = "${var.etcdproxypem}"
+  etcdproxykey             = "${var.etcdproxykey}"
   zonename                 = "${module.route53.internal-zone-id}"
   service-cluster-ip-range = "${var.service-cluster-ip-range}"
 

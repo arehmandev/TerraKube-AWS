@@ -19,6 +19,10 @@ variable "masterpem" {}
 
 variable "masterkey" {}
 
+variable "etcdproxykey" {}
+
+variable "etcdproxypem" {}
+
 ### ASG variables
 
 variable "lc_name" {}
@@ -184,7 +188,7 @@ variable "kubernetes_image" {
 
 variable "flannel_cidr" {
   description = "The flannel overlay network cidr"
-  default     = "10.10.0.0/16"
+  default     = "10.2.0.0/16"
 }
 
 variable "service-cluster-ip-range" {}

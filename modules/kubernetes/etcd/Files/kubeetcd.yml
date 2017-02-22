@@ -4,10 +4,13 @@ coreos:
   flannel:
     interface: $private_ipv4
     etcd_endpoints: "https://127.0.0.1:2379"
-    etcd_certfile: /etc/ssl/kubernetes/${etcdcertobject}
-    etcd_keyfile: /etc/ssl/kubernetes/${etcdkeyobject}
+    etcd_certfile: /etc/ssl/kubernetes/${etcdproxycertobject}
+    etcd_keyfile: /etc/ssl/kubernetes/${etcdproxykeyobject}
     etcd_cafile: /etc/ssl/kubernetes/${cacertobject}
   units:
+  - name: fleet.service
+    command: stop
+    enable: false
   - name: systemd-sysctl.service
     command: restart
   - name: etcd2.service
@@ -73,6 +76,8 @@ coreos:
       ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ ${etcdkeyobject}
       ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ ${mastercertobject}
       ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ ${masterkeyobject}
+      ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ ${etcdproxycertobject}
+      ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ ${etcdproxykeyobject}
       ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/ssl/kubernetes/ ${cacertobject}
       ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/kubernetes/manifests/ Manifests/kube-apiserver.yml
       ExecStartPre=/opt/bin/kmsctl --region ${region} get -b ${bucket} -d /etc/kubernetes/manifests/ Manifests/kube-controller-manager.yml
@@ -152,20 +157,15 @@ coreos:
     command: start
     enable: true
     drop-ins:
-    - name: 100-etcd-certificates.conf
-      content: |
-        [Service]
-        RestartSec=30
-        Restart=always
-        EnvironmentFile=/run/smilodon/environment
-
-        ExecStartPre=/usr/bin/systemctl --quiet is-active etcd2.service
-        ExecStartPre=/usr/bin/systemctl --quiet is-active kmsctl-certs.service
     - name: 50-network-config.conf
       content: |
         [Service]
+        RestartSec=30
+        Restart=on-failure
+        EnvironmentFile=/run/smilodon/environment
         EnvironmentFile="/run/flannel/options.env"
-
+        ExecStartPre=/usr/bin/systemctl --quiet is-active etcd2.service
+        ExecStartPre=/usr/bin/systemctl --quiet is-active kmsctl-certs.service
         ExecStartPre=/usr/bin/etcdctl --peers $${FLANNELD_ETCD_ENDPOINTS} set /coreos.com/network/config '{"Network":"${flannel_cidr}","Backend":{"Type":"vxlan"}}'
   - name: kubelet.service
     command: start
