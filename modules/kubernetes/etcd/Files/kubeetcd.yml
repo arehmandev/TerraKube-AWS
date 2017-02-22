@@ -65,6 +65,7 @@ coreos:
       ExecStartPre=/usr/bin/mkdir -p /etc/ssl/kubernetes
       ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
       ExecStartPre=/usr/bin/chown -R etcd:etcd /etc/ssl/kubernetes /var/lib/etcd2
+      ExecStartPre=/usr/bin/chown -R root:root /etc/kubernetes/manifests
       ExecStartPre=/usr/bin/chmod 0744 /etc/ssl/kubernetes /var/lib/etcd2
       ExecStartPre=/usr/bin/wget https://github.com/gambol99/kmsctl/releases/download/v1.0.4/kmsctl-linux-amd64 -O /opt/bin/kmsctl
       ExecStartPre=/usr/bin/chmod +x /opt/bin/kmsctl
