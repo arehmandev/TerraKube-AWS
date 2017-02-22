@@ -15,6 +15,10 @@ variable "etcdpem" {}
 
 variable "etcdkey" {}
 
+variable "masterpem" {}
+
+variable "masterkey" {}
+
 ### ASG variables
 
 variable "lc_name" {}
@@ -172,3 +176,15 @@ variable "smilodon_release_md5" {
 }
 
 variable "zonename" {}
+
+variable "kubernetes_image" {
+  description = "The docker kubernetes image we are using"
+  default     = "quay.io/coreos/hyperkube:v1.5.2_coreos.0"
+}
+
+variable "flannel_cidr" {
+  description = "The flannel overlay network cidr"
+  default     = "10.10.0.0/16"
+}
+
+variable "service-cluster-ip-range" {}

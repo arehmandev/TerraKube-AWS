@@ -100,13 +100,16 @@ module "etcd" {
   depends-on = "${module.s3.dependency}"
 
   #Template variables
-  internal-tld = "${var.internal-tld}"
-  adminregion  = "${var.adminregion}"
-  bucketname   = "${var.bucketname}"
-  capem        = "${var.capem}"
-  etcdpem      = "${var.etcdpem}"
-  etcdkey      = "${var.etcdkey}"
-  zonename     = "${module.route53.internal-zone-id}"
+  internal-tld             = "${var.internal-tld}"
+  adminregion              = "${var.adminregion}"
+  bucketname               = "${var.bucketname}"
+  capem                    = "${var.capem}"
+  etcdpem                  = "${var.etcdpem}"
+  etcdkey                  = "${var.etcdkey}"
+  masterpem    = "${var.masterpem}"
+  masterkey    = "${var.masterkey}"
+  zonename                 = "${module.route53.internal-zone-id}"
+  service-cluster-ip-range = "${var.service-cluster-ip-range}"
 
   etcd_nodes_az1 = "${var.etcd_nodes_az1}"
   etcd_nodes_az2 = "${var.etcd_nodes_az2}"
