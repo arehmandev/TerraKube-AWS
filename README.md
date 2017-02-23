@@ -8,10 +8,11 @@ Plan for dev:
 
 3. Etcd - data Template *complete*
 
-4. Kube master seperate module with ELB attachment *in progress*
+4. Kube master completion of static pods *complete*
 
+5. with ELB attachment *in progress*
 --
 
-5. Kube node seperate module
+5. Kube node seperate module *very easy once other steps are done*
 
-6. Kube admin local exec module
+6. Kube admin local exec module *mostly done*
