@@ -11,21 +11,24 @@ spec:
     command:
     - /hyperkube
     - apiserver
-    - --admission-control=NamespaceLifecycle,NamespaceExists,LimitRanger,ResourceQuota,ServiceAccount,SecurityContextDeny
-    - --allow-privileged=true
     - --bind-address=0.0.0.0
-    - --etcd-servers=${etcd_memberlist}
+    - --etcd-servers=https://10.0.0.10:2379.https://10.0.1.10:2379.https://10.0.2.10:2379
+    - --allow-privileged=true
+    - --service-cluster-ip-range=10.3.0.0/24
     - --secure-port=443
-    - --tls-cert-file=/etc/ssl/kubernetes/${mastercertobject}
-    - --tls-private-key-file=/etc/ssl/kubernetes/${masterkeyobject}
-    - --service-cluster-ip-range=${serviceiprange}
-    - --insecure-port=8080
-    - --cloud-provider=aws
-    - --enable-swagger-ui=true
-    - --cloud-config=/etc/kubernetes/cloud.cfg
-    - --apiserver-count=${apiservercount}
-    - --client-ca-file=/etc/ssl/kubernetes/${cacertobject}
-    - --service-account-key-file=/etc/ssl/kubernetes/${masterkeyobject}
+    - --advertise-address=0.0.0.0
+    - --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota
+    - --tls-cert-file=/etc/ssl/kubernetes/master.pem
+    - --tls-ca-file=/etc/ssl/kubernetes/ca.pem
+    - --tls-private-key-file=/etc/ssl/kubernetes/masterkey.pem
+    - --client-ca-file=/etc/ssl/kubernetes/ca.pem
+    - --service-account-key-file=/etc/ssl/kubernetes/masterkey.pem
+    - --etcd-cafile=/etc/ssl/kubernetes/ca.pem
+    - --etcd-certfile=/etc/ssl/kubernetes/etcd.pem
+    - --etcd-keyfile=/etc/ssl/kubernetes/etcdkey.pem
+    - --kubelet-certificate-authority=/etc/ssl/kubernetes/ca.pem
+    - --kubelet-client-certificate=/etc/ssl/kubernetes/master.pem
+    - --kubelet-client-key=/etc/ssl/kubernetes/masterkey.pem
     - --runtime-config=extensions/v1beta1/networkpolicies=true
     - --anonymous-auth=false
     livenessProbe:
@@ -43,15 +46,16 @@ spec:
       hostPort: 8080
       name: local
     volumeMounts:
-    - name: ssl-certs-kubernetes
-      mountPath: /etc/ssl/kubernetes
+    - mountPath: /etc/ssl/kubernetes
+      name: ssl-certs-kubernetes
       readOnly: true
-    - name: kubernetes
-      mountPath: /etc/kubernetes
+    - mountPath: /etc/ssl/certs
+      name: ssl-certs-host
+      readOnly: true
   volumes:
-  - name: ssl-certs-kubernetes
-    hostPath:
+  - hostPath:
       path: /etc/ssl/kubernetes
-  - name: kubernetes
-    hostPath:
-      path: /etc/kubernetes
+    name: ssl-certs-kubernetes
+  - hostPath:
+      path: /usr/share/ca-certificates
+    name: ssl-certs-host
