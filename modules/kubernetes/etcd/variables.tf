@@ -138,6 +138,8 @@ variable "az3" {
   description = "Availability Zone 3"
 }
 
+variable "master_elb" {}
+
 # ASG Health checks - switch EC2 to ELB if attaching ELB
 
 variable "health_check_grace_period" {

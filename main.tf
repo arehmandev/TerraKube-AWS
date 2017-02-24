@@ -55,8 +55,10 @@ module "security" {
 module "elbcreate" {
   source          = "./modules/elb/elbcreate"
   security_groups = "${module.security.aws_security_group.kubemaster}"
-  subnets         = ["${module.vpc.aws_subnet.private2.id}", "${module.vpc.aws_subnet.private1.id}"]
+  subnets         = ["${module.vpc.aws_subnet.public1.id}", "${module.vpc.aws_subnet.public2.id}", "${module.vpc.aws_subnet.public3.id}"]
 }
+
+# The ELB is internet facing thus required to be inside public subnets
 
 #3
 module "route53" {
@@ -121,6 +123,7 @@ module "etcd" {
   etcd_nodes_az1 = "${var.etcd_nodes_az1}"
   etcd_nodes_az2 = "${var.etcd_nodes_az2}"
   etcd_nodes_az3 = "${var.etcd_nodes_az3}"
+  master_elb     = "${module.elbcreate.elb_name}"
 
   lc_name              = "${var.etcdlc_name}"
   ownerid              = "${var.ownerid}"
@@ -130,7 +133,7 @@ module "etcd" {
   instance_type        = "${var.coresize}"
   iam_instance_profile = "${module.iam.master_profile_name}"
   key_name             = "${var.key_name}"
-  security_group       = "${module.security.aws_security_group.etcd}"
+  security_group       = "${module.security.aws_security_group.kubemaster}"
   userdata             = "Files/kubeetcd.yml"
 
   asg_name_az1     = "${var.etcd_asg_name_az1}"
@@ -193,4 +196,14 @@ module "etcdbastion" {
   subnet_azs = ["${module.vpc.aws_subnet.public1.id}", "${module.vpc.aws_subnet.public2.id}", "${module.vpc.aws_subnet.public3.id}"]
 
   # The etcd bastion(s) is spread between the public subnets
+}
+
+module "kubeadmin" {
+  source = "./modules/kubernetes/kubeadmin"
+
+  admin-key-pem = "${path.cwd}/Certs/${var.adminpem}"
+  admin-pem     = "${path.cwd}/Certs/${var.adminkey}"
+  ca-pem        = "${path.cwd}/Certs/${var.capem}"
+  master-elb    = "${ module.elbcreate.elb_dns_name }"
+  name          = "${ var.cluster-name }"
 }

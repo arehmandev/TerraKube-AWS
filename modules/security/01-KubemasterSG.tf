@@ -34,18 +34,6 @@ resource "aws_security_group" "kubemaster" {
     protocol    = "tcp"
     cidr_blocks = ["${var.iplock}"]
   }
-  ingress {
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = ["${var.iplock}"]
-  }
-  ingress {
-    from_port   = 8081
-    to_port     = 8081
-    protocol    = "tcp"
-    cidr_blocks = ["${var.iplock}"]
-  }
 
   #outbound rule, no port restrictions
 

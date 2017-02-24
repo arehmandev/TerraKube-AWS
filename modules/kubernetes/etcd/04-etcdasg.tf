@@ -12,6 +12,7 @@ resource "aws_autoscaling_group" "etcd_asg_az1" {
   desired_capacity          = "${var.asg_normsize_az1}"
   health_check_grace_period = "${var.health_check_grace_period}"
   health_check_type         = "${var.health_check_type}"
+  load_balancers            = ["${var.master_elb}"]
 
   tag {
     key                 = "Name"
@@ -34,6 +35,7 @@ resource "aws_autoscaling_group" "etcd_asg_az2" {
   desired_capacity          = "${var.asg_normsize_az2}"
   health_check_grace_period = "${var.health_check_grace_period}"
   health_check_type         = "${var.health_check_type}"
+  load_balancers            = ["${var.master_elb}"]
 
   tag {
     key                 = "Name"
@@ -56,6 +58,7 @@ resource "aws_autoscaling_group" "etcd_asg_az3" {
   desired_capacity          = "${var.asg_normsize_az3}"
   health_check_grace_period = "${var.health_check_grace_period}"
   health_check_type         = "${var.health_check_type}"
+  load_balancers            = ["${var.master_elb}"]
 
   tag {
     key                 = "Name"

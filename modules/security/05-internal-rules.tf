@@ -69,3 +69,21 @@ resource "aws_security_group_rule" "bastiontoetcd" {
   source_security_group_id = "${aws_security_group.bastion.id}"
   security_group_id        = "${aws_security_group.etcd.id}"
 }
+
+resource "aws_security_group_rule" "mastertobastion" {
+  type                     = "ingress"
+  from_port                = 0
+  to_port                  = 0
+  protocol                 = "-1"
+  source_security_group_id = "${aws_security_group.kubemaster.id}"
+  security_group_id        = "${aws_security_group.bastion.id}"
+}
+
+resource "aws_security_group_rule" "bastiontomaster" {
+  type                     = "ingress"
+  from_port                = 0
+  to_port                  = 0
+  protocol                 = "-1"
+  source_security_group_id = "${aws_security_group.bastion.id}"
+  security_group_id        = "${aws_security_group.kubemaster.id}"
+}

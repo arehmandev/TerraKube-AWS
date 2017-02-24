@@ -11,7 +11,7 @@ spec:
     command:
     - /hyperkube
     - apiserver
-    - --bind-address=0.0.0.0
+    - --insecure-bind-address=0.0.0.0
     - --etcd-servers=https://127.0.0.1:2379
     - --allow-privileged=true
     - --service-cluster-ip-range=10.3.0.0/24

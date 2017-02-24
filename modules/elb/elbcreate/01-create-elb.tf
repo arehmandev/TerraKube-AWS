@@ -19,20 +19,6 @@ resource "aws_elb" "kube_master" {
     lb_protocol       = "tcp"
   }
 
-  listener {
-    instance_port     = 80
-    instance_protocol = "tcp"
-    lb_port           = 80
-    lb_protocol       = "tcp"
-  }
-
-  listener {
-    instance_port     = 8080
-    instance_protocol = "tcp"
-    lb_port           = 8080
-    lb_protocol       = "tcp"
-  }
-
   tags {
     Name = "${var.elb_name}"
   }
