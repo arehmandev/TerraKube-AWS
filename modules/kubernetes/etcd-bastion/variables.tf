@@ -1,6 +1,4 @@
-### Module etcd
-
-# template variables
+### Module etcd bastion
 
 # template variables
 variable "internal-tld" {}

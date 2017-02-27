@@ -178,3 +178,13 @@ variable "bastion_asg_number_of_instances" {}
 variable "bastion_lc_name" {}
 
 variable "bastion_asg_name" {}
+
+# Kubenode
+
+variable "kubenode_asg_minimum_number_of_instances" {}
+
+variable "kubenode_asg_number_of_instances" {}
+
+variable "kubenode_lc_name" {}
+
+variable "kubenode_asg_name" {}

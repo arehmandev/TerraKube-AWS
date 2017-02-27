@@ -198,6 +198,47 @@ module "etcdbastion" {
   # The etcd bastion(s) is spread between the public subnets
 }
 
+module "kubenode" {
+  source = "./modules/kubernetes/kubenode"
+
+  #Template variables
+  adminregion    = "${var.adminregion}"
+  internal-tld   = "${var.internal-tld}"
+  adminregion    = "${var.adminregion}"
+  bucketname     = "${var.bucketname}"
+  capem          = "${var.capem}"
+  etcdpem        = "${var.etcdpem}"
+  etcdkey        = "${var.etcdkey}"
+  kubenodepem    = "${var.kubenodepem}"
+  kubenodekey    = "${var.kubenodekey}"
+  etcdproxypem   = "${var.etcdproxypem}"
+  etcdproxykey   = "${var.etcdproxykey}"
+  etcd_nodes_az1 = "${var.etcd_nodes_az1}"
+  etcd_nodes_az2 = "${var.etcd_nodes_az2}"
+  etcd_nodes_az3 = "${var.etcd_nodes_az3}"
+  master_elb_dns = "${module.elbcreate.elb_dns_name}"
+
+  lc_name              = "${var.kubenode_lc_name}"
+  ownerid              = "${var.ownerid}"
+  ami_name             = "${var.ami_name}"
+  channel              = "${var.channel}"
+  virtualization_type  = "${var.virtualization_type}"
+  instance_type        = "${var.coresize}"
+  iam_instance_profile = "${module.iam.worker_profile_name}"
+  key_name             = "${var.key_name}"
+  security_group       = "${module.security.aws_security_group.bastion}"
+  userdata             = "Files/kubenode.yml"
+
+  asg_name                        = "${var.kubenode_asg_name}"
+  asg_number_of_instances         = "${var.kubenode_asg_number_of_instances}"
+  asg_minimum_number_of_instances = "${var.kubenode_asg_minimum_number_of_instances}"
+
+  azs        = ["${lookup(var.subnetaz1, var.adminregion)}", "${lookup(var.subnetaz2, var.adminregion)}", "${lookup(var.subnetaz3, var.adminregion)}"]
+  subnet_azs = ["${module.vpc.aws_subnet.private1.id}", "${module.vpc.aws_subnet.private2.id}", "${module.vpc.aws_subnet.private3.id}"]
+
+  # The kube node(s) are spread between the private subnets
+}
+
 module "kubeadmin" {
   source = "./modules/kubernetes/kubeadmin"
 

@@ -135,12 +135,17 @@ service-cluster-ip-range = "10.3.0.0/24"
 # Launch config
 kubemasterlc_name = "Kubemaster-lc"
 bastion_lc_name = "kubebastion-lc"
+kubenode_lc_name = "kubenode-lc"
 
 # Autoscaling groups
 kubemaster_asg_name = "kubemaster-asg"
 kubemaster_asg_number_of_instances = "3"
 kubemaster_asg_minimum_number_of_instances = "3"
 
-bastion_asg_minimum_number_of_instances = "1"
-bastion_asg_number_of_instances = "1"
 bastion_asg_name = "kubebastion-asg"
+bastion_asg_number_of_instances = "1"
+bastion_asg_minimum_number_of_instances = "1"
+
+kubenode_asg_name = "kubenode-asg"
+kubenode_asg_number_of_instances = "2"
+kubenode_asg_minimum_number_of_instances = "2"
