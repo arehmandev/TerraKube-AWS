@@ -3,25 +3,25 @@ data "template_file" "kubeconfig" {
 kubectl config set-cluster cluster-${ var.name } \
   --embed-certs=true \
   --server=https://${ var.master-elb } \
-  --certificate-authority=${ path.cwd }/${ var.ca-pem }
+  --certificate-authority=${ var.ca-pem }
 kubectl config set-credentials admin-${ var.name } \
   --embed-certs=true \
-  --certificate-authority=${ path.cwd }/${ var.ca-pem } \
-  --client-key=${ path.cwd }/${ var.admin-key-pem } \
-  --client-certificate=${ path.cwd }/${ var.admin-pem }
+  --certificate-authority=${ var.ca-pem } \
+  --client-key=${ var.admin-key-pem } \
+  --client-certificate=${ var.admin-pem }
 kubectl config set-context ${ var.name } \
   --cluster=cluster-${ var.name } \
   --user=admin-${ var.name }
 kubectl config use-context ${ var.name }
 # Run this command to configure your kubeconfig:
-# eval $(terraform output kubeconfig)
+# ./kubeconfig.sh or eval $(terraform output kubeconfig)
 EOF
 }
 
 resource "null_resource" "kubeconfig" {
   provisioner "local-exec" {
     command = <<LOCAL_EXEC
-mkdir -p ./tmp && cat <<'__USERDATA__' > ./tmp/kubeconfig
+mkdir -p ./kubeconfig && cat <<'__USERDATA__' > ./kubeconfig/kubeconfig.sh && chmod +x ./kubeconfig/kubeconfig.sh
 ${data.template_file.kubeconfig.rendered}
 __USERDATA__
 LOCAL_EXEC
@@ -31,11 +31,11 @@ LOCAL_EXEC
     command = <<LOCAL_EXEC
 kubectl config set-cluster cluster-${ var.name } \
   --server=https://${ var.master-elb } \
-  --certificate-authority=${ path.cwd }/${ var.ca-pem } &&\
+  --certificate-authority=${ var.ca-pem } &&\
 kubectl config set-credentials admin-${ var.name } \
-  --certificate-authority=${ path.cwd }/${ var.ca-pem } \
-  --client-key=${ path.cwd }/${ var.admin-key-pem } \
-  --client-certificate=${ path.cwd }/${ var.admin-pem } &&\
+  --certificate-authority=${ var.ca-pem } \
+  --client-key=${ var.admin-key-pem } \
+  --client-certificate=${ var.admin-pem } &&\
 kubectl config set-context ${ var.name } \
   --cluster=cluster-${ var.name } \
   --user=admin-${ var.name } &&\

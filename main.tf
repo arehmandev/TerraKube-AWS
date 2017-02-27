@@ -201,8 +201,8 @@ module "etcdbastion" {
 module "kubeadmin" {
   source = "./modules/kubernetes/kubeadmin"
 
-  admin-key-pem = "${path.cwd}/Certs/${var.adminpem}"
-  admin-pem     = "${path.cwd}/Certs/${var.adminkey}"
+  admin-key-pem = "${path.cwd}/Certs/${var.adminkey}"
+  admin-pem     = "${path.cwd}/Certs/${var.adminpem}"
   ca-pem        = "${path.cwd}/Certs/${var.capem}"
   master-elb    = "${ module.elbcreate.elb_dns_name }"
   name          = "${ var.cluster-name }"
