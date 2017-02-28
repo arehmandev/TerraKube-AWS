@@ -16,4 +16,6 @@ Plan for dev:
 
 7. Kube node seperate module *in progress - complete*
 
+8. Addons included *complete* - optional, create makefile
+
 Kubernetes setup complete - undergoing QA and testing
