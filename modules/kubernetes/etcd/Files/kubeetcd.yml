@@ -178,7 +178,7 @@ coreos:
         --volume dns,kind=host,source=/etc/resolv.conf \
         --mount volume=dns,target=/etc/resolv.conf" \
         --volume ssl,kind=host,source=/etc/ssl/kubernetes \
-        --mount volume=dns,target=/etc/kubernetes/ssl"
+        --mount volume=ssl,target=/etc/kubernetes/ssl"
       ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
       ExecStartPre=/usr/bin/mkdir -p /var/log/containers
       ExecStartPre=-/usr/bin/rkt rm --uuid-file=/var/run/kubelet-pod.uuid
@@ -192,7 +192,7 @@ coreos:
         --cluster_dns=10.3.0.10 \
         --cluster_domain=cluster.local
       ExecStop=-/usr/bin/rkt stop --uuid-file=/var/run/kubelet-pod.uuid
-      Restart=always
+      Restart=on-failure
       RestartSec=10
       [Install]
       WantedBy=multi-user.target

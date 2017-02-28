@@ -12,6 +12,13 @@ resource "tls_cert_request" "kubenode" {
     "kubernetes.default.svc",
     "kubernetes.default.svc.cluster.local",
     "*.*.compute.internal,*.ec2.internal",
+    "master.${var.internal-tld}",
+    "*.${var.adminregion}.elb.amazonaws.com",
+    "localhost",
+  ]
+
+  ip_addresses = [
+    "0.0.0.0",
   ]
 
   subject {
