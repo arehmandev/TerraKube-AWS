@@ -13,6 +13,7 @@ Plan for dev:
 5. with ELB attachment *complete*
 
 6. Kube admin local exec module *complete* (can now do kubectl get nodes)
---
 
-7. Kube node seperate module *in progress - easy*
+7. Kube node seperate module *in progress - complete*
+
+Kubernetes setup complete - undergoing QA and testing

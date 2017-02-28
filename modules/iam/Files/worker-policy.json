@@ -10,24 +10,12 @@
       ]
     },
     {
+      "Action": [
+        "ec2:*",
+        "elasticloadbalancing:*"
+        ],
       "Effect": "Allow",
-      "Action": "ec2:Describe*",
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": "autoscaling:Describe*",
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": "ec2:AttachVolume",
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": "ec2:DetachVolume",
-      "Resource": "*"
+      "Resource": [ "*" ]
     },
     {
       "Effect": "Allow",
