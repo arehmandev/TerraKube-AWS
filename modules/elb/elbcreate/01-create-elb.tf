@@ -20,6 +20,8 @@ resource "aws_elb" "kube_master" {
   }
 
   tags {
-    Name = "${var.elb_name}"
+    KubernetesCluster = "${ var.name }"
+    Name              = "${var.elb_name}"
+    builtWith         = "terraform"
   }
 }

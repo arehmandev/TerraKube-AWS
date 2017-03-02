@@ -29,6 +29,7 @@ module "tls" {
 #2
 module "vpc" {
   source          = "./modules/vpc"
+  name            = "${var.cluster-name}"
   adminregion     = "${var.adminregion}"
   key_name        = "${var.key_name}"
   public_key_path = "${var.public_key_path}"
@@ -48,12 +49,14 @@ module "vpc" {
 module "security" {
   source     = "./modules/security"
   depends-on = "${module.vpc.dependency}"
+  name       = "${var.cluster-name}"
   vpcid      = "${module.vpc.aws_vpc.id}"
   iplock     = "${var.iplock}"
 }
 
 module "elbcreate" {
   source          = "./modules/elb/elbcreate"
+  name            = "${var.cluster-name}"
   security_groups = "${module.security.aws_security_group.kubemaster}"
   subnets         = ["${module.vpc.aws_subnet.public1.id}", "${module.vpc.aws_subnet.public2.id}", "${module.vpc.aws_subnet.public3.id}"]
 }
@@ -81,6 +84,7 @@ module "iam" {
 module "s3" {
   source       = "./modules/s3"
   depends-on   = "${module.iam.worker_profile_name}"
+  name         = "${var.cluster-name}"
   bucketname   = "${var.bucketname}"
   worker-role  = "${var.worker_role_name}"
   capem        = "${var.capem}"
@@ -105,6 +109,7 @@ module "s3" {
 module "etcd" {
   source     = "./modules/kubernetes/etcd"
   depends-on = "${module.s3.dependency}"
+  name       = "${var.cluster-name}"
 
   #Template variables
   internal-tld             = "${var.internal-tld}"
@@ -200,6 +205,7 @@ module "etcdbastion" {
 
 module "kubenode" {
   source = "./modules/kubernetes/kubenode"
+  name   = "${var.cluster-name}"
 
   #Template variables
   adminregion    = "${var.adminregion}"

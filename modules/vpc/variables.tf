@@ -1,5 +1,7 @@
 # Provider
 
+variable "name" {}
+
 variable "adminregion" {}
 
 variable "key_name" {}

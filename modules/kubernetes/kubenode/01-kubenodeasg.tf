@@ -80,4 +80,10 @@ resource "aws_autoscaling_group" "kubenode" {
     value               = "kubenode"
     propagate_at_launch = true
   }
+
+  tag {
+    key                 = "KubernetesCluster"
+    value               = "${var.name}"
+    propagate_at_launch = true
+  }
 }

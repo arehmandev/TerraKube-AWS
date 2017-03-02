@@ -1,3 +1,5 @@
+variable "name" {}
+
 variable "elb_name" {
   default = "kube-master"
 }

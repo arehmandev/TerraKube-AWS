@@ -10,3 +10,5 @@ variable "iplock" {
 variable "depends-on" {
   description = "allows module dependency"
 }
+
+variable "name" {}

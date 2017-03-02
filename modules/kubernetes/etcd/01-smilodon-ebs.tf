@@ -10,9 +10,10 @@ resource "aws_ebs_volume" "etcd_volumes_az1" {
   tags {
     Role              = "etcd-data"
     Env               = "${var.environment}"
-    KubernetesCluster = "${var.environment}"
+    KubernetesCluster = "${ var.name }"
     Name              = "${var.environment}-etcd-node${count.index}"
     NodeID            = "${count.index}"
+    builtWith         = "terraform"
   }
 }
 
@@ -27,9 +28,10 @@ resource "aws_ebs_volume" "etcd_volumes_az2" {
   tags {
     Role              = "etcd-data"
     Env               = "${var.environment}"
-    KubernetesCluster = "${var.environment}"
+    KubernetesCluster = "${ var.name }"
     Name              = "${var.environment}-etcd-node${count.index}"
     NodeID            = "${count.index + aws_ebs_volume.etcd_volumes_az1.count}"
+    builtWith         = "terraform"
   }
 }
 
@@ -44,8 +46,9 @@ resource "aws_ebs_volume" "etcd_volumes_az3" {
   tags {
     Role              = "etcd-data"
     Env               = "${var.environment}"
-    KubernetesCluster = "${var.environment}"
+    KubernetesCluster = "${ var.name }"
     Name              = "${var.environment}-etcd-node${count.index}"
     NodeID            = "${count.index + aws_ebs_volume.etcd_volumes_az1.count + aws_ebs_volume.etcd_volumes_az2.count}"
+    builtWith         = "terraform"
   }
 }

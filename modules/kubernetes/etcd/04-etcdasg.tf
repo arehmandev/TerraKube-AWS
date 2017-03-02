@@ -19,6 +19,12 @@ resource "aws_autoscaling_group" "etcd_asg_az1" {
     value               = "etcd-cluster-az1"
     propagate_at_launch = true
   }
+
+  tag {
+    key                 = "KubernetesCluster"
+    value               = "${var.name}"
+    propagate_at_launch = true
+  }
 }
 
 resource "aws_autoscaling_group" "etcd_asg_az2" {
@@ -42,6 +48,12 @@ resource "aws_autoscaling_group" "etcd_asg_az2" {
     value               = "etcd-cluster-az2"
     propagate_at_launch = true
   }
+
+  tag {
+    key                 = "KubernetesCluster"
+    value               = "${var.name}"
+    propagate_at_launch = true
+  }
 }
 
 resource "aws_autoscaling_group" "etcd_asg_az3" {
@@ -63,6 +75,12 @@ resource "aws_autoscaling_group" "etcd_asg_az3" {
   tag {
     key                 = "Name"
     value               = "etcd-cluster-az3"
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "KubernetesCluster"
+    value               = "${var.name}"
     propagate_at_launch = true
   }
 }

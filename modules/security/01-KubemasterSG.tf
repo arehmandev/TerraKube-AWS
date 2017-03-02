@@ -34,6 +34,12 @@ resource "aws_security_group" "kubemaster" {
     protocol    = "tcp"
     cidr_blocks = ["${var.iplock}"]
   }
+  ingress {
+    from_port   = -1
+    to_port     = -1
+    protocol    = "icmp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   #outbound rule, no port restrictions
 
@@ -42,5 +48,10 @@ resource "aws_security_group" "kubemaster" {
     to_port     = 0
     protocol    = "-1"          # for all protocols
     cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags {
+    KubernetesCluster = "${ var.name }"
+    Name              = "worker-k8s-${ var.name }"
+    builtWith         = "terraform"
   }
 }

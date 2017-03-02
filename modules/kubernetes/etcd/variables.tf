@@ -1,5 +1,7 @@
 ### Module etcd
 
+variable "name" {}
+
 variable "depends-on" {}
 
 # template variables

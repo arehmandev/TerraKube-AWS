@@ -1,5 +1,7 @@
 ### Module kubenode
 
+variable "name" {}
+
 # template variables
 variable "internal-tld" {}
 

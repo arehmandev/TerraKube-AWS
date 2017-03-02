@@ -1,5 +1,7 @@
 ### S3 bucket
 
+variable "name" {}
+
 variable "bucketname" {}
 
 variable "worker-role" {}

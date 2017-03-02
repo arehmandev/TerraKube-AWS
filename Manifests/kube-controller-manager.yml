@@ -15,6 +15,7 @@ spec:
     - --leader-elect=true
     - --service-account-private-key-file=/etc/ssl/kubernetes/${masterkeyobject}
     - --root-ca-file=/etc/ssl/kubernetes/${cacertobject}
+    - --cloud-provider=aws
     resources:
       requests:
         cpu: 200m

@@ -3,7 +3,8 @@ resource "aws_route_table" "public1_route_table" {
   vpc_id = "${aws_vpc.vpc.id}"
 
   tags {
-    Name = "TerraKube Public1 route table"
+    Name              = "TerraKube Public1 route table"
+    KubernetesCluster = "${ var.name }"
   }
 }
 
@@ -11,7 +12,8 @@ resource "aws_route_table" "public2_route_table" {
   vpc_id = "${aws_vpc.vpc.id}"
 
   tags {
-    Name = "TerraKube Public2 route table"
+    Name              = "TerraKube Public2 route table"
+    KubernetesCluster = "${ var.name }"
   }
 }
 
@@ -19,7 +21,8 @@ resource "aws_route_table" "public3_route_table" {
   vpc_id = "${aws_vpc.vpc.id}"
 
   tags {
-    Name = "TerraKube Public3 route table"
+    Name              = "TerraKube Public3 route table"
+    KubernetesCluster = "${ var.name }"
   }
 }
 
@@ -47,7 +50,8 @@ resource "aws_route_table" "private1_route_table" {
   vpc_id = "${aws_vpc.vpc.id}"
 
   tags {
-    Name = "TerraKube Private1 route table"
+    Name              = "TerraKube Private1 route table"
+    KubernetesCluster = "${ var.name }"
   }
 }
 
@@ -55,7 +59,8 @@ resource "aws_route_table" "private2_route_table" {
   vpc_id = "${aws_vpc.vpc.id}"
 
   tags {
-    Name = "TerraKube Private2 route table"
+    Name              = "TerraKube Private2 route table"
+    KubernetesCluster = "${ var.name }"
   }
 }
 
@@ -63,7 +68,8 @@ resource "aws_route_table" "private3_route_table" {
   vpc_id = "${aws_vpc.vpc.id}"
 
   tags {
-    Name = "TerraKube Private3 route table"
+    Name              = "TerraKube Private3 route table"
+    KubernetesCluster = "${ var.name }"
   }
 }
 

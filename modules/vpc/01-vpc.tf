@@ -4,7 +4,8 @@ resource "aws_vpc" "vpc" {
   enable_dns_hostnames = true
 
   tags = {
-    Name = "TerraKubeVPC"
+    Name              = "TerraKubeVPC"
+    KubernetesCluster = "${ var.name }"
   }
 }
 
@@ -13,7 +14,8 @@ resource "aws_internet_gateway" "internet-gateway" {
   vpc_id = "${aws_vpc.vpc.id}"
 
   tags {
-    Name = "TerraKubeInternetGateway"
+    Name              = "TerraKubeInternetGateway"
+    KubernetesCluster = "${ var.name }"
   }
 }
 

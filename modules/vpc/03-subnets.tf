@@ -7,7 +7,8 @@ resource "aws_subnet" "public1" {
   availability_zone       = "${lookup(var.subnetaz1, var.adminregion)}"
 
   tags {
-    Name = "Terrakube public subnet ${lookup(var.subnetaz1, var.adminregion)}"
+    Name              = "Terrakube public subnet ${lookup(var.subnetaz1, var.adminregion)}"
+    KubernetesCluster = "${ var.name }"
   }
 }
 
@@ -18,7 +19,8 @@ resource "aws_subnet" "public2" {
   availability_zone       = "${lookup(var.subnetaz2, var.adminregion)}"
 
   tags {
-    Name = "Terrakube public subnet ${lookup(var.subnetaz2, var.adminregion)}"
+    Name              = "Terrakube public subnet ${lookup(var.subnetaz2, var.adminregion)}"
+    KubernetesCluster = "${ var.name }"
   }
 }
 
@@ -29,7 +31,8 @@ resource "aws_subnet" "public3" {
   availability_zone       = "${lookup(var.subnetaz3, var.adminregion)}"
 
   tags {
-    Name = "Terrakube public subnet ${lookup(var.subnetaz3, var.adminregion)}"
+    Name              = "Terrakube public subnet ${lookup(var.subnetaz3, var.adminregion)}"
+    KubernetesCluster = "${ var.name }"
   }
 }
 
@@ -41,7 +44,8 @@ resource "aws_subnet" "private1" {
   availability_zone = "${lookup(var.subnetaz1, var.adminregion)}"
 
   tags = {
-    Name = "Terraform private subnet ${lookup(var.subnetaz1, var.adminregion)}"
+    Name              = "Terraform private subnet ${lookup(var.subnetaz1, var.adminregion)}"
+    KubernetesCluster = "${ var.name }"
   }
 }
 
@@ -51,7 +55,8 @@ resource "aws_subnet" "private2" {
   availability_zone = "${lookup(var.subnetaz2, var.adminregion)}"
 
   tags = {
-    Name = "Terraform private subnet ${lookup(var.subnetaz2, var.adminregion)}"
+    Name              = "Terraform private subnet ${lookup(var.subnetaz2, var.adminregion)}"
+    KubernetesCluster = "${ var.name }"
   }
 }
 
@@ -61,7 +66,8 @@ resource "aws_subnet" "private3" {
   availability_zone = "${lookup(var.subnetaz3, var.adminregion)}"
 
   tags = {
-    Name = "Terraform private subnet ${lookup(var.subnetaz3, var.adminregion)}"
+    Name              = "Terraform private subnet ${lookup(var.subnetaz3, var.adminregion)}"
+    KubernetesCluster = "${ var.name }"
   }
 }
 

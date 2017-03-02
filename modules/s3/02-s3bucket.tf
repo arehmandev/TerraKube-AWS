@@ -12,7 +12,8 @@ resource "aws_s3_bucket" "kubebucket" {
   acl    = "private"
 
   tags {
-    Name        = "Kubebucket"
-    Environment = "Dev"
+    Name              = "Kubebucket"
+    Environment       = "Dev"
+    KubernetesCluster = "${ var.name }"
   }
 }

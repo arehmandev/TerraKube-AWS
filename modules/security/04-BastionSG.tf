@@ -55,4 +55,9 @@ resource "aws_security_group" "bastion" {
     protocol    = "-1"          # for all protocols
     cidr_blocks = ["0.0.0.0/0"]
   }
+  tags {
+    KubernetesCluster = "${ var.name }"
+    Name              = "worker-k8s-${ var.name }"
+    builtWith         = "terraform"
+  }
 }

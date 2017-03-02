@@ -94,7 +94,8 @@ coreos:
         --kubeconfig=/etc/kubernetes/kubeconfig.yml \
         --register-node=true \
         --tls-cert-file=/etc/ssl/kubernetes/${kubenodecertobject} \
-        --tls-private-key-file=/etc/ssl/kubernetes/${kubenodekeyobject}
+        --tls-private-key-file=/etc/ssl/kubernetes/${kubenodekeyobject} \
+        --cloud-provider=aws
       Restart=on-failure
       RestartSec=5
       [Install]
