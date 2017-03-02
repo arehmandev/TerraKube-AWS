@@ -2,7 +2,7 @@
 
 ## This repo is currently being tested and cleaned up.
 
-Welcome to Terrakube, a project of mine brought from persional passion and frustration with current Kubernetes offerings on AWS.
+Welcome to Terrakube, a project of mine brought from personal passion and frustration with current Kubernetes offerings on AWS.
 
 This repo is designed to equip you with everything you require to provision a Highly Available Kubernetes Cluster on AWS.
 TerraKube is completely provisioned through Terraform, cloud-config systemd units and local-exec commands. Certs are generated via Terraform TLS provider.
@@ -104,3 +104,5 @@ gambol99/kmsctl
 vaijab
 
 CoreOS official documentation
+
+This repo was formerly github.com/arehmandev/TerraKube-AWS/ 
