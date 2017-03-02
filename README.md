@@ -5,6 +5,44 @@ This repo is currently being tested and cleaned up.
 Welcome to Terrakube, a project of mine brought from persional passion and frustration with current Kubernetes offerings on AWS.
 
 This repo is designed to equip you with everything you require to provision a Highly Available Kubernetes Cluster on AWS.
+TerraKube is completely provisioned through Terraform, cloud-config systemd units and local-exec commands. Certs are generated via Terraform TLS provider.
+TerraKube is also of the few examples of a Kubernetes cluster running with Masters in an autoscaling group as well as Nodes. (for self-healing purposes)
+
+General structure - in depth will be done later:
+
+VPC module:
+
+Spread over 3 AZs, 3 private and public subnets, 3 NAT gateways (for true HA) and related elastic IPs. Each subnet with own route table and associated route. Also added keypair creation here as I felt it'd slot nicely in here rather than other modules.
+
+ELB module:
+
+ELB creation with attachment to the Masters (Only via port 443)
+
+Kubernetes modules:
+
+Etcd/Master - Currently the etcd cluster is being hosted on the master as per Google recommendation however this can easily be isolated if required. The Master nodes all run Smilodon for EBS and ENI attachment (following the EBS per IP recommendation).
+Bastion - This is configured to allow you to SSH in and run "sudo etcdctl cluster-health" (etcd proxy). An OpenVPN module will be added soon.
+Kubenodes - Probably the most basic of the bunch, cloud-config similar to the bastion but with the kubelet-wrapper installed.
+
+Route53 module:
+
+This module is not necessary however has been added in case of later integration usage. Fairly straightforward, create a HostedZone for your usage.
+
+S3 module:
+
+This module creates a KMS encryption key, the relevant keypolicy and adds the IAM roles of the masters & nodes to them. Then it uploads the Manifests and TLS certs as encrypted objects ready to be downloaded via kmsctl.
+
+Security module:
+
+Creation of security groups - this will be modified and cleaned up soon however for functional purposes it is working as intended as of now.
+
+TLS module:
+
+A module that ended up being rather simple after figuring out the complexities of Master autoscaling groups. SANs can be further restricted but as of now it is functioning as intended
+
+IAM module:
+
+Creates Master and Node roles, associates policies to these roles and creates instance profiles.
 
 To use:
 ```
@@ -59,7 +97,11 @@ Kubernetes setup complete - undergoing QA and testing
 Inspiration:
 
 UKHomeOffice/smilodon
+
 kz8s/tack
+
 gambol99/kmsctl
+
 vaijab
+
 CoreOS official documentation
