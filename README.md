@@ -6,7 +6,8 @@ Welcome to Terrakube, a project of mine brought from personal passion and frustr
 
 This repo is designed to equip you with everything you require to provision a Highly Available Kubernetes Cluster on AWS.
 TerraKube is completely provisioned through Terraform, cloud-config systemd units and local-exec commands. Certs are generated via Terraform TLS provider.
-TerraKube is also of the few examples of a Kubernetes cluster running with Masters in an autoscaling group as well as Nodes. (for self-healing purposes)
+
+TerraKube is also of the few examples of a Kubernetes cluster running with Masters in an autoscaling group as well as Nodes. (for self-healing purposes - This drew inspiration from the Home Office DSP (Digital Services Platform) and tooling (smilodon. kmsctl).
 
 ## General structure - in depth will be done later:
 
