@@ -1,6 +1,6 @@
 # TerraKube - Formerly Prototype-X
 
-## This repo was moved to: ![Capgemini/TerraKube-AWS](https://github.com/Capgemini/TerraKube-AWS)
+## This repo was moved to: [Capgemini/TerraKube-AWS](https://github.com/Capgemini/TerraKube-AWS)
 
 Welcome to Terrakube, a project of mine brought from personal passion and frustration with current Kubernetes offerings on AWS.
 
